@@ -15,16 +15,33 @@ export default function GameBoard() {
     socket = io(`:${PORT + 1}`, {
       path: '/api/socket',
       addTrailingSlash: false,
+      autoConnect: false,
     })
 
-    console.log(socket)
+    // First check if we have an existing sessionId for the player,
+    // so we may jump back into the game.
+    const sessionId = localStorage.getItem('sessionId')
+    if (sessionId) {
+      socket.auth = { sessionId }
+    }
+    socket.connect()
 
     socket.on('connect', () => {
       console.log('Connected', socket.id)
     })
 
+    // If we didn't have a sessionId set when connecting,
+    // the server will create one for us.
+    socket.on('session', (sessionId) => {
+      console.log('session', sessionId)
+      // Attach the sessionId to the next reconnection attempts.
+      socket.auth = { sessionId }
+      // Store it in localStorage.
+      localStorage.setItem('sessionId', sessionId)
+    })
+
     socket.on('connect_error', async (err) => {
-      console.log(`connect_error due to ${err.message}`)
+      console.log(`Connect_error due to ${err.message}`)
       await fetch('/api/socket')
     })
 

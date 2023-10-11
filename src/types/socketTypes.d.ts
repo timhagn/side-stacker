@@ -12,6 +12,7 @@ interface ServerToClientEvents {
   withAck: (d: string, callback: (e: number) => void) => void
   createdMessage: (msg: string) => void
   newIncomingMessage: (msg: string) => void
+  session: (sessionId) => void
 }
 
 interface ClientToServerEvents {
@@ -21,6 +22,7 @@ interface ClientToServerEvents {
 
 interface InterServerEvents {
   ping: () => void
+  userId: string
 }
 
 interface SocketData {
