@@ -30,5 +30,5 @@ This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-opti
 
 When starting this project I had problems with Socket.io (polling instead of
 sockets used by it). And after falling down the rabbit hole of Next.js
-[Issue #49334](https://github.com/vercel/next.js/issues/49334) I got it solved
-Thanks to [Dipanjan Panja's comment](https://github.com/vercel/next.js/issues/49334#issuecomment-1731391847)
+[Issue #49334](https://github.com/vercel/next.js/issues/49334).  
+I got it solved thanks to [Dipanjan Panja's comment](https://github.com/vercel/next.js/issues/49334#issuecomment-1731391847)
