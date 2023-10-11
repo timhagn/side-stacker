@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io'
-import { randomId } from '@/lib/socketHelpers'
+import { randomId } from '@/utils/socketHelpers'
 import { newGame } from '@/lib/sqliteDb'
 
 export default async function onSocketConnection(socket: Socket) {

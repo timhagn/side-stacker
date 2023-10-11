@@ -6,6 +6,7 @@ import {
   CREATE_PLAY_TABLE_QUERY,
   DB_NAME,
   GAME_TABLE,
+  LOAD_GAME_FOR_PLAYER,
 } from '@/const/dbConstants'
 import { GameStack, GameState } from '@/types/dbTypes'
 
@@ -43,16 +44,10 @@ export async function loadGameForPlayer(playerId = ''): Promise<GameStack> {
   const db = await openDb()
   if (db) {
     try {
-      const result = await db.get(
-        `SELECT * FROM ${GAME_TABLE}
-         WHERE (playerOne = :playerId
-            OR playerTwo = :playerId)
-           AND gameState = :gameState`,
-        {
-          ':playerId': playerId,
-          ':gameState': GameState.OPEN,
-        },
-      )
+      const result = await db.get(LOAD_GAME_FOR_PLAYER, {
+        ':playerId': playerId,
+        ':gameState': GameState.OPEN,
+      })
       if (result) {
         return result
       }

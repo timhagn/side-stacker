@@ -11,6 +11,13 @@ export const CREATE_GAME_TABLE_QUERY = `
   )
 `
 
+export const LOAD_GAME_FOR_PLAYER = `
+  SELECT * FROM ${GAME_TABLE}
+  WHERE (playerOne = :playerId
+    OR playerTwo = :playerId)
+   AND gameState = :gameState
+`
+
 export const PLAY_TABLE = 'play_stack'
 
 export const CREATE_PLAY_TABLE_QUERY = `

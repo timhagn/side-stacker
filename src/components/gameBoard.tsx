@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { io, Socket } from 'socket.io-client'
 import { ClientToServerEvents, ServerToClientEvents } from '@/types/socketTypes'
 import { PORT } from '@/const/socketConstants'
-import { getSessionIdCookie, setSessionIdCookie } from '@/lib/cookieUtils'
+import { getSessionIdCookie, setSessionIdCookie } from '@/utils/cookieUtils'
 
 let socket: Socket<ServerToClientEvents, ClientToServerEvents>
 

@@ -4,7 +4,7 @@ import GameBoard from '@/components/gameBoard'
 import { Database } from 'sqlite'
 import { loadGameForPlayer, openDb } from '@/lib/sqliteDb'
 import { cookies } from 'next/headers'
-import { SESSION_ID_COOKIE_NAME } from '@/lib/cookieUtils'
+import { SESSION_ID_COOKIE_NAME } from '@/utils/cookieUtils'
 
 let db: Database | undefined
 
