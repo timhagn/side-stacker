@@ -10,7 +10,10 @@ import {
 } from '@/types/socketTypes'
 import { PORT } from '@/const/socketConstants'
 
-export default function handler(_: NextRequest, res: NextResponseWithSocket) {
+export default async function handler(
+  _: NextRequest,
+  res: NextResponseWithSocket,
+) {
   if (res.socket.server.io) {
     console.log('Server already started!')
     return
