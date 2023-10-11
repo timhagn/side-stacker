@@ -50,7 +50,7 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col gap-8 items-center justify-center p-24 bg-black text-white">
       <p>
-        Socket.io Test page after falling down the rabbit hole of Next.js
+        Socket.io Test page after falling down the rabbit hole of Next.js{' '}
         <Link
           href="https://github.com/vercel/next.js/issues/49334"
           target="_blank"
@@ -69,7 +69,7 @@ export default function Home() {
         >
           Dipanjan Panja&apos;s comment
         </Link>{' '}
-        & I got it solved.
+        I got it solved.
       </p>
       <input
         value={value}
