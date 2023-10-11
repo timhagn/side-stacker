@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { io, Socket } from 'socket.io-client'
 import { ClientToServerEvents, ServerToClientEvents } from '@/types/socketTypes'
 import { PORT } from '@/const/socketConstants'
+import { getSessionIdCookie, setSessionIdCookie } from '@/lib/cookieUtils'
 
 let socket: Socket<ServerToClientEvents, ClientToServerEvents>
 
@@ -20,7 +21,7 @@ export default function GameBoard() {
 
     // First check if we have an existing sessionId for the player,
     // so we may jump back into the game.
-    const sessionId = localStorage.getItem('sessionId')
+    const sessionId = getSessionIdCookie()
     if (sessionId) {
       socket.auth = { sessionId }
     }
@@ -36,8 +37,8 @@ export default function GameBoard() {
       console.log('session', sessionId)
       // Attach the sessionId to the next reconnection attempts.
       socket.auth = { sessionId }
-      // Store it in localStorage.
-      localStorage.setItem('sessionId', sessionId)
+      // Store it a cookie.
+      setSessionIdCookie(sessionId)
     })
 
     socket.on('connect_error', async (err) => {

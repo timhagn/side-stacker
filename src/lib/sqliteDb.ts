@@ -5,7 +5,9 @@ import {
   CREATE_GAME_TABLE_QUERY,
   CREATE_PLAY_TABLE_QUERY,
   DB_NAME,
+  GAME_TABLE,
 } from '@/const/dbConstants'
+import { GameStack, GameState } from '@/types/dbTypes'
 
 const DB_FILENAME =
   process.env.NODE_ENV === 'production'
@@ -26,44 +28,37 @@ export async function openDb() {
   }
 }
 
-export async function newGame() {
+export async function newGame(playerOne: string) {
   const db = await openDb()
   if (db) {
-    await db.exec(
-      "INSERT INTO tally_tokes (id, numberOfTokes, lastTokeAt) VALUES(date('now'), 1, time('now')) ON CONFLICT(id) DO UPDATE SET numberOfTokes = numberOfTokes + 1, lastTokeAt = time('now')",
+    const result = await db.run(
+      `INSERT INTO ${GAME_TABLE} (playerOne) VALUES (?)`,
+      playerOne,
     )
+    console.log(result)
   }
 }
 
-export async function loadTodayPuffs(): Promise<Omit<TallyTokes, 'id'>> {
+export async function loadGameForPlayer(playerId = ''): Promise<GameStack> {
   const db = await openDb()
   if (db) {
-    const result = await db.get(
-      "SELECT numberOfTokes, lastTokeAt FROM tally_tokes WHERE id = date('now')",
-    )
-    if (result) {
-      const { numberOfTokes, lastTokeAt } = result
-      return { numberOfTokes, lastTokeAt }
+    try {
+      const result = await db.get(
+        `SELECT * FROM ${GAME_TABLE}
+         WHERE (playerOne = :playerId
+            OR playerTwo = :playerId)
+           AND gameState = :gameState`,
+        {
+          ':playerId': playerId,
+          ':gameState': GameState.OPEN,
+        },
+      )
+      if (result) {
+        return result
+      }
+    } catch (err) {
+      console.log(err)
     }
   }
-  return { numberOfTokes: 0, lastTokeAt: '' }
-}
-
-export interface TallyTokes {
-  id: string
-  numberOfTokes: number
-  lastTokeAt: string
-}
-
-export async function loadPastPuffs(): Promise<TallyTokes[]> {
-  const db = await openDb()
-  if (db) {
-    const result = await db.all(
-      "SELECT * FROM tally_tokes WHERE id < date('now')",
-    )
-    if (result) {
-      return result
-    }
-  }
-  return []
+  return { id: -1, playerOne: '', playerTwo: '', gameState: GameState.OPEN }
 }
