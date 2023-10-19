@@ -37,7 +37,6 @@ export default async function handler(
     addTrailingSlash: false,
     cors: { origin: '*' },
   }).listen(PORT + 1)
-  res.socket.server.io = io
 
   io.use(async (socket, next) => {
     const sessionId = socket.handshake.auth.sessionId
@@ -45,11 +44,13 @@ export default async function handler(
       const gameState = await loadGameForPlayer(sessionId)
       socket.data.sessionId = sessionId
       if (gameState?.id !== -1) {
-        socket.data.gameId = gameState?.id
+        socket.data.gameState = gameState
       }
       return next()
     }
   })
+
+  res.socket.server.io = io
 
   io.on('connection', onSocketConnection)
 

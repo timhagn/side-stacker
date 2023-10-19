@@ -1,7 +1,7 @@
-import { GamePieceId, GamePieceState } from '@/types/gameStateTypes'
+import { GamePieceId, GamePieceStates } from '@/types/gameStateTypes'
 
 interface GamePieceProps {
-  gamePieceState: GamePieceState
+  gamePieceState: GamePieceStates
   gamePieceId: GamePieceId
   onPieceClick: (gamePieceId: GamePieceId) => void
   // todo: onClick & onHover
@@ -14,13 +14,13 @@ export default function GamePiece({
 }: GamePieceProps) {
   let pieceColor
   switch (gamePieceState) {
-    case GamePieceState.playerOne:
+    case GamePieceStates.playerOne:
       pieceColor = 'border-emerald-600 bg-emerald-600'
       break
-    case GamePieceState.playerTwo:
+    case GamePieceStates.playerTwo:
       pieceColor = 'border-red-950 bg-red-950'
       break
-    case GamePieceState.empty:
+    case GamePieceStates.empty:
     default:
       pieceColor = 'border-gray-600'
       break

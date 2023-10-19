@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server'
 import { Server as HTTPServer } from 'http'
 import { Server as IOServer } from 'socket.io'
 import { Socket as NetSocket } from 'net'
-import { GamePieceId } from '@/types/gameStateTypes'
-import { GameState } from '@/types/dbTypes'
+import { GamePieceBoardState, GamePieceId } from '@/types/gameStateTypes'
+import { GameStack, GameState } from '@/types/dbTypes'
 
 /**
  * Socket.io types
@@ -15,6 +15,7 @@ interface ServerToClientEvents {
   createdMessage: (msg: string) => void
   newIncomingMessage: (msg: string) => void
   session: (sessionId: string) => void
+  updatedBoard: (boardState: GamePieceBoardState) => void
 }
 
 interface ClientToServerEvents {
@@ -30,7 +31,7 @@ interface InterServerEvents {
 
 interface SocketData {
   sessionId: string
-  gameState: GameState
+  gameState: GameStack
   msg: string
 }
 

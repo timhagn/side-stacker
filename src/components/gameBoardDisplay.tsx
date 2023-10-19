@@ -1,7 +1,7 @@
 import {
   GameBoardState,
   GamePieceId,
-  GamePieceState,
+  GamePieceStates,
 } from '@/types/gameStateTypes'
 import GamePiece from '@/components/gamePiece'
 
@@ -22,7 +22,7 @@ export default function GameBoardDisplay({
               gamePieceState={piece}
               gamePieceId={{ row: rowIndex, col: pieceIndex }}
               onPieceClick={onPieceClick}
-              key={`${GamePieceState[piece]}-${pieceIndex}`}
+              key={`${GamePieceStates[piece]}-${pieceIndex}`}
             />
           ))}
         </div>

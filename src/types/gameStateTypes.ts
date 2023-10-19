@@ -1,11 +1,13 @@
-export enum GamePieceState {
+export enum GamePieceStates {
   'empty',
   'playerOne',
   'playerTwo',
 }
 
+export type GamePieceBoardState = GamePieceStates[][]
+
 export interface GameBoardState {
-  gameBoard: GamePieceState[][]
+  gameBoard: GamePieceBoardState
 }
 
 export interface GamePieceId {

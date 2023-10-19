@@ -21,7 +21,7 @@ let socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
 interface GameBoardProps extends GameBoardState {}
 
 export default function GameBoard({ gameBoard }: GameBoardProps) {
-  const [value, setValue] = useState('')
+  const [currentBoard, setCurrentBoard] = useState(gameBoard)
 
   const socketInitializer = async () => {
     if (!socket?.connected) {
@@ -58,9 +58,9 @@ export default function GameBoard({ gameBoard }: GameBoardProps) {
         await fetch('/api/socket')
       })
 
-      socket.on('newIncomingMessage', (msg) => {
-        console.log('New message in client', msg)
-        setValue(msg)
+      socket.on('updatedBoard', (currentBoard) => {
+        console.log('New board received', currentBoard)
+        setCurrentBoard(currentBoard)
       })
     }
   }
@@ -112,7 +112,7 @@ export default function GameBoard({ gameBoard }: GameBoardProps) {
       {/*  className="w-full h-12 px-2 rounded text-black placeholder:text-gray-500"*/}
       {/*  placeholder="Enter some text and see the syncing of text in another tab"*/}
       {/*/>*/}
-      <GameBoardDisplay gameBoard={gameBoard} onPieceClick={onPieceClick} />
+      <GameBoardDisplay gameBoard={currentBoard} onPieceClick={onPieceClick} />
     </>
   )
 }

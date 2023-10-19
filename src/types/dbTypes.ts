@@ -16,3 +16,5 @@ export interface PlayStack {
   player: string
   move: string
 }
+
+export interface GameMove extends Omit<PlayStack, 'id'> {}
