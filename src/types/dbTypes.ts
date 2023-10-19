@@ -13,6 +13,6 @@ export interface GameStack {
 export interface PlayStack {
   id: number
   gameId: number
-  playerId: string
+  player: string
   move: string
 }

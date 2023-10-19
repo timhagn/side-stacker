@@ -12,8 +12,6 @@ export const metadata: Metadata = {
   description: 'Connect Four with a twist',
 }
 
-let db: Database | undefined
-
 export default async function RootLayout({
   children,
 }: {

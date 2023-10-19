@@ -7,3 +7,8 @@ export enum GamePieceState {
 export interface GameBoardState {
   gameBoard: GamePieceState[][]
 }
+
+export interface GamePieceId {
+  row: number
+  col: number
+}

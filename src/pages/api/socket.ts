@@ -9,6 +9,8 @@ import {
   SocketData,
 } from '@/types/socketTypes'
 import { PORT } from '@/const/socketConstants'
+import { randomId } from '@/utils/socketHelpers'
+import { loadGameForPlayer } from '@/lib/sqliteDb'
 
 export const config = {
   api: {
@@ -36,6 +38,18 @@ export default async function handler(
     cors: { origin: '*' },
   }).listen(PORT + 1)
   res.socket.server.io = io
+
+  io.use(async (socket, next) => {
+    const sessionId = socket.handshake.auth.sessionId
+    if (sessionId) {
+      const gameState = await loadGameForPlayer(sessionId)
+      socket.data.sessionId = sessionId
+      if (gameState?.id !== -1) {
+        socket.data.gameId = gameState?.id
+      }
+      return next()
+    }
+  })
 
   io.on('connection', onSocketConnection)
 

@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { Server as HTTPServer } from 'http'
 import { Server as IOServer } from 'socket.io'
 import { Socket as NetSocket } from 'net'
+import { GamePieceId } from '@/types/gameStateTypes'
+import { GameState } from '@/types/dbTypes'
 
 /**
  * Socket.io types
@@ -12,12 +14,13 @@ interface ServerToClientEvents {
   withAck: (d: string, callback: (e: number) => void) => void
   createdMessage: (msg: string) => void
   newIncomingMessage: (msg: string) => void
-  session: (sessionId) => void
+  session: (sessionId: string) => void
 }
 
 interface ClientToServerEvents {
   hello: () => void
   createdMessage: (msg: string) => void
+  setPiece: (gamePieceId: GamePieceId) => void
 }
 
 interface InterServerEvents {
@@ -26,7 +29,8 @@ interface InterServerEvents {
 }
 
 interface SocketData {
-  id: string
+  sessionId: string
+  gameState: GameState
   msg: string
 }
 

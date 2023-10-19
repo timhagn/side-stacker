@@ -7,8 +7,9 @@ import {
   DB_NAME,
   GAME_TABLE,
   LOAD_GAME_FOR_PLAYER,
+  PLAY_TABLE,
 } from '@/const/dbConstants'
-import { GameStack, GameState } from '@/types/dbTypes'
+import { GameStack, GameState, PlayStack } from '@/types/dbTypes'
 
 const DB_FILENAME =
   process.env.NODE_ENV === 'production'
@@ -36,7 +37,7 @@ export async function newGame(playerOne: string) {
       `INSERT INTO ${GAME_TABLE} (playerOne) VALUES (?)`,
       playerOne,
     )
-    console.log(result)
+    console.log('NEW GAME', result)
   }
 }
 
@@ -60,6 +61,22 @@ export async function getLastOpenGame(playerId: string) {
   return null
 }
 
+export async function getGameById(gameId: number) {
+  const db = await openDb()
+  if (db) {
+    const result = await db.get(
+      `SELECT *
+      FROM ${GAME_TABLE}
+      WHERE id = :gameId`,
+      { ':gameId': gameId },
+    )
+    if (result) {
+      return result
+    }
+  }
+  return null
+}
+
 export async function joinGameOrNewGame(playerId: string) {
   const db = await openDb()
   if (db) {
@@ -68,13 +85,14 @@ export async function joinGameOrNewGame(playerId: string) {
       if (rowId !== null) {
         const result = await db.run(
           `UPDATE ${GAME_TABLE}
-         SET playerTwo = ?
-         WHERE id = ?`,
+           SET playerTwo = ?
+           WHERE id = ?`,
           playerId,
           rowId,
         )
         if (result) {
-          return result
+          console.log('Joined Game', result)
+          return await getGameById(rowId)
         }
       } else {
         await newGame(playerId)
@@ -89,7 +107,7 @@ export async function loadGameForPlayer(playerId = ''): Promise<GameStack> {
   const db = await openDb()
   if (db) {
     try {
-      const result = await db.get(LOAD_GAME_FOR_PLAYER, {
+      const result = await db.get<GameStack>(LOAD_GAME_FOR_PLAYER, {
         ':playerId': playerId,
         ':gameState': GameState.OPEN,
       })
@@ -101,4 +119,38 @@ export async function loadGameForPlayer(playerId = ''): Promise<GameStack> {
     }
   }
   return { id: -1, playerOne: '', playerTwo: '', gameState: GameState.OPEN }
+}
+
+export async function getLastMoveInGame(
+  gameId: number,
+): Promise<PlayStack | null> {
+  const db = await openDb()
+  if (db) {
+    const result = await db.get<PlayStack>(
+      `SELECT *
+        FROM ${PLAY_TABLE}
+        WHERE gameId = :gameId
+        ORDER BY id DESC LIMIT 1`,
+      {
+        ':gameId': gameId,
+      },
+    )
+    if (result) {
+      return result
+    }
+  }
+  return null
+}
+
+export async function writeNextMove(playerMove: Omit<PlayStack, 'id'>) {
+  const db = await openDb()
+  if (db) {
+    const result = await db.run(
+      `INSERT INTO ${PLAY_TABLE} (gameId, player, move) VALUES (?, ?, ?)`,
+      playerMove.gameId,
+      playerMove.player,
+      playerMove.move,
+    )
+    console.log('WROTE MOVE', result)
+  }
 }

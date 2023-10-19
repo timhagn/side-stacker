@@ -16,13 +16,14 @@ const dummyBoard: GamePieceState[][] = Array(7).fill(
 export default async function SideStackerGame() {
   const cookieStore = cookies()
   const sessionId = cookieStore.get(SESSION_ID_COOKIE_NAME)
-  console.log(sessionId)
+  console.log('SESSION ID', sessionId)
   let gameBoardState
   if (sessionId?.value) {
     // TODO: do something with this (and create the board)
     gameBoardState = await loadGameForPlayer(sessionId.value)
     if (gameBoardState?.id === -1) {
-      await joinGameOrNewGame(sessionId.value)
+      const result = await joinGameOrNewGame(sessionId.value)
+      console.log(result)
     }
   }
   if (!db) {
