@@ -6,10 +6,14 @@ import { io, Socket } from 'socket.io-client'
 import { ClientToServerEvents, ServerToClientEvents } from '@/types/socketTypes'
 import { PORT } from '@/const/socketConstants'
 import { getSessionIdCookie, setSessionIdCookie } from '@/utils/cookieUtils'
+import { GameBoardState } from '@/types/gameStateTypes'
+import GameBoardDisplay from '@/components/gameBoardDisplay'
 
 let socket: Socket<ServerToClientEvents, ClientToServerEvents>
 
-export default function GameBoard() {
+interface GameBoardProps extends GameBoardState {}
+
+export default function GameBoard({ gameBoard }: GameBoardProps) {
   const [value, setValue] = useState('')
 
   const socketInitializer = async () => {
@@ -66,34 +70,35 @@ export default function GameBoard() {
 
   return (
     <>
-      <p>
-        Socket.io Test page after falling down the rabbit hole of Next.js{' '}
-        <Link
-          href="https://github.com/vercel/next.js/issues/49334"
-          target="_blank"
-          className="text-blue-500 underline"
-        >
-          Issue #49334
-        </Link>
-        .
-      </p>
-      <p>
-        Thanks to{' '}
-        <Link
-          href="https://github.com/vercel/next.js/issues/49334#issuecomment-1731391847"
-          target="_blank"
-          className="text-blue-500 underline"
-        >
-          Dipanjan Panja&apos;s comment
-        </Link>{' '}
-        I got it solved.
-      </p>
-      <input
-        value={value}
-        onChange={sendMessageHandler}
-        className="w-full h-12 px-2 rounded text-black placeholder:text-gray-500"
-        placeholder="Enter some text and see the syncing of text in another tab"
-      />
+      {/*<p>*/}
+      {/*  Socket.io Test page after falling down the rabbit hole of Next.js{' '}*/}
+      {/*  <Link*/}
+      {/*    href="https://github.com/vercel/next.js/issues/49334"*/}
+      {/*    target="_blank"*/}
+      {/*    className="text-blue-500 underline"*/}
+      {/*  >*/}
+      {/*    Issue #49334*/}
+      {/*  </Link>*/}
+      {/*  .*/}
+      {/*</p>*/}
+      {/*<p>*/}
+      {/*  Thanks to{' '}*/}
+      {/*  <Link*/}
+      {/*    href="https://github.com/vercel/next.js/issues/49334#issuecomment-1731391847"*/}
+      {/*    target="_blank"*/}
+      {/*    className="text-blue-500 underline"*/}
+      {/*  >*/}
+      {/*    Dipanjan Panja&apos;s comment*/}
+      {/*  </Link>{' '}*/}
+      {/*  I got it solved.*/}
+      {/*</p>*/}
+      {/*<input*/}
+      {/*  value={value}*/}
+      {/*  onChange={sendMessageHandler}*/}
+      {/*  className="w-full h-12 px-2 rounded text-black placeholder:text-gray-500"*/}
+      {/*  placeholder="Enter some text and see the syncing of text in another tab"*/}
+      {/*/>*/}
+      <GameBoardDisplay gameBoard={gameBoard} />
     </>
   )
 }

@@ -10,6 +10,12 @@ import {
 } from '@/types/socketTypes'
 import { PORT } from '@/const/socketConstants'
 
+export const config = {
+  api: {
+    externalResolver: true,
+  },
+}
+
 export default async function handler(
   _: NextRequest,
   res: NextResponseWithSocket,

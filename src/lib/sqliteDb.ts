@@ -40,6 +40,51 @@ export async function newGame(playerOne: string) {
   }
 }
 
+export async function getLastOpenGame(playerId: string) {
+  const db = await openDb()
+  if (db) {
+    const rowId = await db.get(
+      `SELECT id
+        FROM ${GAME_TABLE}
+        WHERE playerOne != :playerId AND playerTwo IS NULL AND gameState = :gameState
+        ORDER BY id DESC LIMIT 1`,
+      {
+        ':playerId': playerId,
+        ':gameState': GameState.OPEN,
+      },
+    )
+    if (rowId?.id) {
+      return rowId.id
+    }
+  }
+  return null
+}
+
+export async function joinGameOrNewGame(playerId: string) {
+  const db = await openDb()
+  if (db) {
+    try {
+      const rowId = await getLastOpenGame(playerId)
+      if (rowId !== null) {
+        const result = await db.run(
+          `UPDATE ${GAME_TABLE}
+         SET playerTwo = ?
+         WHERE id = ?`,
+          playerId,
+          rowId,
+        )
+        if (result) {
+          return result
+        }
+      } else {
+        await newGame(playerId)
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
+}
+
 export async function loadGameForPlayer(playerId = ''): Promise<GameStack> {
   const db = await openDb()
   if (db) {

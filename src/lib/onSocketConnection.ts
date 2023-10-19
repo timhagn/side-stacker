@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io'
 import { randomId } from '@/utils/socketHelpers'
-import { newGame } from '@/lib/sqliteDb'
+import { joinGameOrNewGame, newGame } from '@/lib/sqliteDb'
 
 export default async function onSocketConnection(socket: Socket) {
   const sessionId = socket.handshake.auth.sessionId
@@ -8,7 +8,7 @@ export default async function onSocketConnection(socket: Socket) {
   if (!sessionId) {
     console.log('creating new session')
     const newSessionId = randomId()
-    await newGame(newSessionId)
+    await joinGameOrNewGame(newSessionId)
     socket.emit('session', newSessionId)
   }
 
