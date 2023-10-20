@@ -4,6 +4,12 @@ export enum GamePieceStates {
   'playerTwo',
 }
 
+export enum GamePieceHoverState {
+  'notHovered',
+  'legal',
+  'illegal',
+}
+
 export type GamePieceBoardState = GamePieceStates[][]
 
 export interface GameBoardState {

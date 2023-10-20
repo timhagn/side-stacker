@@ -8,6 +8,7 @@ import { PORT } from '@/const/socketConstants'
 import { getSessionIdCookie, setSessionIdCookie } from '@/utils/cookieUtils'
 import { GameBoardState, GamePieceId } from '@/types/gameStateTypes'
 import GameBoardDisplay from '@/components/gameBoardDisplay'
+import { isLegalMove } from '@/utils/gameUtils'
 
 let socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
   `:${PORT + 1}`,
@@ -73,13 +74,16 @@ export default function GameBoard({ gameBoard }: GameBoardProps) {
     socket.emit('createdMessage', value)
   }
 
-  const onPieceClick = useCallback((gamePieceId: GamePieceId) => {
-    if (!socket) return
-    socket.emit('setPiece', gamePieceId, (currentBoard) => {
-      console.log('New board received as ACK', currentBoard)
-      setCurrentBoard(currentBoard)
-    })
-  }, [])
+  const onPieceClick = useCallback(
+    (gamePieceId: GamePieceId) => {
+      if (!socket || !isLegalMove(gamePieceId, currentBoard)) return
+      socket.emit('setPiece', gamePieceId, (currentBoard) => {
+        console.log('New board received as ACK', currentBoard)
+        setCurrentBoard(currentBoard)
+      })
+    },
+    [currentBoard],
+  )
 
   useEffect(() => {
     socketInitializer()

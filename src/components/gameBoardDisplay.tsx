@@ -4,6 +4,7 @@ import {
   GamePieceStates,
 } from '@/types/gameStateTypes'
 import GamePiece from '@/components/gamePiece'
+import { isLegalMoveCurried } from '@/utils/gameUtils'
 
 interface GameBoardDisplayProps extends GameBoardState {
   onPieceClick: (gamePieceId: GamePieceId) => void
@@ -22,6 +23,7 @@ export default function GameBoardDisplay({
               gamePieceState={piece}
               gamePieceId={{ row: rowIndex, col: pieceIndex }}
               onPieceClick={onPieceClick}
+              isLegalMoveCurried={isLegalMoveCurried(gameBoard)}
               key={`${GamePieceStates[piece]}-${pieceIndex}`}
             />
           ))}
