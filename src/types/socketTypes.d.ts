@@ -21,7 +21,10 @@ interface ServerToClientEvents {
 interface ClientToServerEvents {
   hello: () => void
   createdMessage: (msg: string) => void
-  setPiece: (gamePieceId: GamePieceId) => void
+  setPiece: (
+    gamePieceId: GamePieceId,
+    callback: (boardState: GamePieceBoardState) => void,
+  ) => void
 }
 
 interface InterServerEvents {

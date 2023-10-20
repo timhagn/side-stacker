@@ -47,8 +47,8 @@ export default async function handler(
       if (gameState?.id !== -1) {
         socket.data.gameState = gameState
       }
-      return next()
     }
+    return next()
   })
 
   io.on('connection', onSocketConnection)

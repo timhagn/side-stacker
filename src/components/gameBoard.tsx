@@ -75,7 +75,10 @@ export default function GameBoard({ gameBoard }: GameBoardProps) {
 
   const onPieceClick = useCallback((gamePieceId: GamePieceId) => {
     if (!socket) return
-    socket.emit('setPiece', gamePieceId)
+    socket.emit('setPiece', gamePieceId, (currentBoard) => {
+      console.log('New board received as ACK', currentBoard)
+      setCurrentBoard(currentBoard)
+    })
   }, [])
 
   useEffect(() => {

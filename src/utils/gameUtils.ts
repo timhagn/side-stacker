@@ -28,3 +28,5 @@ export const buildBoardState = (
   }
   return boardState
 }
+
+// export const isLegalMove = (currentMove: )
