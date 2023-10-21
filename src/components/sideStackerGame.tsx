@@ -24,5 +24,7 @@ export default async function SideStackerGame() {
     const moves = await getMovesInGame(gameBoardState.id)
     initialBoard = buildBoardState(moves, gameBoardState)
   }
-  return <GameBoard gameBoard={initialBoard} />
+  return (
+    <GameBoard gameBoard={initialBoard} initialGameState={gameBoardState} />
+  )
 }

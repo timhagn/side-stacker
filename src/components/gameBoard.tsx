@@ -5,9 +5,12 @@ import { io, Socket } from 'socket.io-client'
 import { ClientToServerEvents, ServerToClientEvents } from '@/types/socketTypes'
 import { PORT } from '@/const/socketConstants'
 import { getSessionIdCookie, setSessionIdCookie } from '@/utils/cookieUtils'
-import { GameBoardState, GamePieceId } from '@/types/gameStateTypes'
+import { GameBoardState, GamePieceId, PlayStates } from '@/types/gameStateTypes'
 import GameBoardDisplay from '@/components/gameBoardDisplay'
 import { isLegalMove } from '@/utils/gameUtils'
+import { GameStack } from '@/types/dbTypes'
+import PlayerInfo from '@/components/playerInfo'
+import TurnInfo from '@/components/turnInfo'
 
 let socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
   `:${PORT + 1}`,
@@ -18,10 +21,17 @@ let socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
   },
 )
 
-interface GameBoardProps extends GameBoardState {}
+interface GameBoardProps extends GameBoardState {
+  initialGameState: GameStack
+}
 
-export default function GameBoard({ gameBoard }: GameBoardProps) {
+export default function GameBoard({
+  gameBoard,
+  initialGameState,
+}: GameBoardProps) {
   const [currentBoard, setCurrentBoard] = useState(gameBoard)
+  const [currentGameState, setCurrentGameState] = useState(initialGameState)
+  const [currentPlayState, setCurrentPlayState] = useState(PlayStates.waiting)
 
   const socketInitializer = async () => {
     if (!socket?.connected) {
@@ -41,6 +51,12 @@ export default function GameBoard({ gameBoard }: GameBoardProps) {
 
       socket.on('connect', () => {
         console.log('Connected', socket.id)
+        // TODO: emit player state (whose turn it is) & wait for playerTwo
+      })
+
+      socket.on('playerTwoJoined', (gameState) => {
+        setCurrentGameState(gameState)
+        setTimeout(() => setCurrentPlayState(PlayStates.ownTurn), 1000)
         // TODO: emit player state (whose turn it is) & wait for playerTwo
       })
 
@@ -90,8 +106,11 @@ export default function GameBoard({ gameBoard }: GameBoardProps) {
   }, [])
 
   return (
-    <>
+    <div className="flex flex-col">
       <GameBoardDisplay gameBoard={currentBoard} onPieceClick={onPieceClick} />
-    </>
+      <PlayerInfo gameState={currentGameState} />
+      {/* TODO: set turnInfo according to currentPlayState */}
+      <TurnInfo gameState={currentGameState} />
+    </div>
   )
 }

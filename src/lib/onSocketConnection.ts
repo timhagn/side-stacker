@@ -1,7 +1,6 @@
 import { Socket } from 'socket.io'
 import { getOpposingPlayer, randomId } from '@/utils/socketHelpers'
 import {
-  getLastMoveInGame,
   getMovesInGame,
   joinGameOrNewGame,
   writeNextMove,
@@ -9,6 +8,8 @@ import {
 import { GamePieceBoardState, GamePieceId } from '@/types/gameStateTypes'
 import { GameMove, PlayStack } from '@/types/dbTypes'
 import { buildBoardState } from '@/utils/gameUtils'
+import { whoAmI } from '@/utils/playerUtils'
+import { playerTwoText } from '@/const/playerConstants'
 
 export default async function onSocketConnection(socket: Socket) {
   const sessionId = socket.data.sessionId
@@ -27,6 +28,10 @@ export default async function onSocketConnection(socket: Socket) {
   const gameId = socket.data.gameState?.id
   if (gameId) {
     socket.join(`game-${gameId}`)
+  }
+
+  if (whoAmI(socket.data.gameState) === playerTwoText) {
+    socket.to(`game-${gameId}`).emit('playerTwoJoined')
   }
 
   console.log('New connection (SERVER)', socket.id)

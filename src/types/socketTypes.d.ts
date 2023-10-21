@@ -9,17 +9,14 @@ import { GameStack, GameState } from '@/types/dbTypes'
  * Socket.io types
  */
 interface ServerToClientEvents {
-  noArg: () => void
-  basicEmit: (a: number, b: string, c: Buffer) => void
-  withAck: (d: string, callback: (e: number) => void) => void
   createdMessage: (msg: string) => void
   newIncomingMessage: (msg: string) => void
   session: (sessionId: string) => void
   updatedBoard: (boardState: GamePieceBoardState) => void
+  playerTwoJoined: (gameState: GameStack) => void
 }
 
 interface ClientToServerEvents {
-  hello: () => void
   createdMessage: (msg: string) => void
   setPiece: (
     gamePieceId: GamePieceId,
