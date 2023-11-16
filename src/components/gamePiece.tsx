@@ -28,7 +28,7 @@ export default function GamePiece({
       pieceColor = 'border-emerald-600 bg-emerald-600'
       break
     case GamePieceStates.playerTwo:
-      pieceColor = 'border-red-950 bg-red-950'
+      pieceColor = 'border-red-400 bg-red-400'
       break
     case GamePieceStates.empty:
     default:
@@ -48,8 +48,8 @@ export default function GamePiece({
     hoverState === GamePieceHoverState.notHovered
       ? ''
       : hoverState === GamePieceHoverState.legal
-      ? 'hover:outline hover:outline-offset-2 hover:outline-2 hover:outline-emerald-400'
-      : 'hover:outline hover:outline-offset-2 hover:outline-2 hover:outline-red-400'
+        ? 'hover:outline hover:outline-offset-2 hover:outline-2 hover:outline-emerald-400'
+        : 'hover:outline hover:outline-offset-2 hover:outline-2 hover:outline-red-800'
   return (
     <div
       className={`w-8 h-8 rounded-full border-4 ${pieceColor} ${hoverClass}`}

@@ -95,6 +95,7 @@ export default async function onSocketConnection(socket: Socket) {
         const playState = hasWon
           ? getWinningPlayerState(player, socket.data.gameState)
           : getCurrentPlayState(player, socket.data.gameState)
+        // TODO: WRITE FINISHED TO THE DB when the bug is solved
         socket
           .to(`game-${gameId}`)
           .emit('updatedBoard', { boardState, playState })

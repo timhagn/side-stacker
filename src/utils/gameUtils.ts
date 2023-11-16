@@ -140,6 +140,7 @@ export const hasStackCountForWin = (
   currentBoard: GamePieceBoardState,
   gameState: GameStack,
 ) => {
+  // TODO: check why it sometimes just counts non-bordering pieces!
   const gamePieceState = getGamePieceStateForPlayer(currentPlayer, gameState)
   for (let index = 0; index < STEPS_TO_CHECK.length; index += 2) {
     let stepCount = 1
@@ -164,7 +165,8 @@ export const hasStackCountForWin = (
 
     stepCount += checkStackCountRecursive(nextStepData)
 
-    if (stepCount >= COUNT_TILL_WON) {
+    if (stepCount > COUNT_TILL_WON) {
+      console.log(stepCount)
       return true
     }
   }
