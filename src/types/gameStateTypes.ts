@@ -1,5 +1,3 @@
-import { otherPlayerTurn, ownTurn, waiting } from '@/const/playerConstants'
-
 export enum GamePieceStates {
   'empty',
   'playerOne',
@@ -27,4 +25,11 @@ export enum PlayStates {
   waiting,
   playerOneTurn,
   playerTwoTurn,
+  playerOneWon,
+  playerTwoWon,
+}
+
+export interface CurrentStep {
+  x: number
+  y: number
 }

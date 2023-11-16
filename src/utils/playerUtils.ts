@@ -3,8 +3,12 @@ import { getSessionIdCookie } from '@/utils/cookieUtils'
 import {
   otherPlayerTurn,
   ownTurn,
+  playerOneLosingText,
   playerOneText,
+  playerOneWinningText,
+  playerTwoLosingText,
   playerTwoText,
+  playerTwoWinningText,
   waiting,
 } from '@/const/playerConstants'
 import { PlayStates } from '@/types/gameStateTypes'
@@ -30,6 +34,14 @@ export const whichTurn = (gameState: GameStack, playState: PlayStates) => {
       return sessionId === gameState?.playerOne ? ownTurn : otherPlayerTurn
     case playState === PlayStates.playerTwoTurn:
       return sessionId === gameState?.playerTwo ? ownTurn : otherPlayerTurn
+    case playState === PlayStates.playerOneWon:
+      return sessionId === gameState?.playerOne
+        ? playerOneWinningText
+        : playerTwoLosingText
+    case playState === PlayStates.playerTwoWon:
+      return sessionId === gameState?.playerTwo
+        ? playerTwoWinningText
+        : playerOneLosingText
     default:
       return ''
   }

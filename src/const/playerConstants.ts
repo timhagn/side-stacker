@@ -3,3 +3,7 @@ export const playerTwoText = 'Player Two'
 export const waiting = 'Waiting for Player Two'
 export const ownTurn = 'Your turn'
 export const otherPlayerTurn = "Opponent's turn"
+export const playerOneWinningText = 'player 1 won'
+export const playerTwoWinningText = 'player 2 won'
+export const playerOneLosingText = 'player 1 lost'
+export const playerTwoLosingText = 'player 2 lost'

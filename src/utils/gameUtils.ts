@@ -1,12 +1,22 @@
 import { GameStack, PlayStack } from '@/types/dbTypes'
 import {
+  CurrentStep,
   GamePieceBoardState,
   GamePieceId,
   GamePieceStates,
   PlayStates,
 } from '@/types/gameStateTypes'
-import { BOARD_COLS, BOARD_ROWS } from '@/const/gameConstants'
-import { getOpposingPlayer, isPlayerTwo } from '@/utils/socketHelpers'
+import {
+  BOARD_COLS,
+  BOARD_ROWS,
+  COUNT_TILL_WON,
+  STEPS_TO_CHECK,
+} from '@/const/gameConstants'
+import {
+  getGamePieceStateForPlayer,
+  getOpposingPlayer,
+  isPlayerTwo,
+} from '@/utils/socketHelpers'
 
 export const initializeBoard = (): GamePieceBoardState =>
   [...new Array(BOARD_ROWS)].map((_) =>
@@ -82,4 +92,81 @@ export const getCurrentPlayState = (
   return opposingPlayer === gameState.playerTwo
     ? PlayStates.playerTwoTurn
     : PlayStates.playerOneTurn
+}
+
+export const checkStackCountRecursive = ({
+  gamePieceState,
+  currentPosition,
+  currentBoard,
+  currentCount,
+  stepIndex,
+}: {
+  gamePieceState: GamePieceStates
+  currentPosition: CurrentStep
+  currentBoard: GamePieceBoardState
+  currentCount: number
+  stepIndex: number
+}): number => {
+  const { x, y } = currentPosition
+  // Break early if we are outside the board.
+  if (x < 0 || x > BOARD_COLS || y < 0 || y > BOARD_ROWS) {
+    return currentCount
+  }
+  // Early break if it's an empty field or has an opposing piece.
+  if (currentBoard[x][y] !== gamePieceState) {
+    return currentCount
+  }
+  // Go to the next board field if it's a piece of the Player.
+  if (currentBoard[x][y] === gamePieceState) {
+    const nextPosition: CurrentStep = {
+      x: x + STEPS_TO_CHECK[stepIndex].x,
+      y: y + STEPS_TO_CHECK[stepIndex].y,
+    }
+    const nextStepData = {
+      gamePieceState,
+      currentPosition: nextPosition,
+      currentBoard,
+      currentCount: currentCount + 1,
+      stepIndex,
+    }
+    return checkStackCountRecursive(nextStepData)
+  }
+  return currentCount
+}
+
+export const hasStackCountForWin = (
+  currentPlayer: string,
+  gamePieceId: GamePieceId,
+  currentBoard: GamePieceBoardState,
+  gameState: GameStack,
+) => {
+  const gamePieceState = getGamePieceStateForPlayer(currentPlayer, gameState)
+  for (let index = 0; index < STEPS_TO_CHECK.length; index += 2) {
+    let stepCount = 1
+    const currentPosition: CurrentStep = {
+      x: gamePieceId.row + STEPS_TO_CHECK[index].x,
+      y: gamePieceId.col + STEPS_TO_CHECK[index].y,
+    }
+    const nextStepData = {
+      gamePieceState,
+      currentPosition,
+      currentBoard,
+      currentCount: stepCount,
+      stepIndex: index,
+    }
+    stepCount = checkStackCountRecursive(nextStepData)
+
+    nextStepData.currentPosition = {
+      x: gamePieceId.row + STEPS_TO_CHECK[index + 1].x,
+      y: gamePieceId.col + STEPS_TO_CHECK[index + 1].y,
+    }
+    nextStepData.stepIndex = index + 1
+
+    stepCount += checkStackCountRecursive(nextStepData)
+
+    if (stepCount >= COUNT_TILL_WON) {
+      return true
+    }
+  }
+  return false
 }

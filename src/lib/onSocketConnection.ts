@@ -1,5 +1,9 @@
 import { Socket } from 'socket.io'
-import { isPlayerTwo, randomId } from '@/utils/socketHelpers'
+import {
+  getWinningPlayerState,
+  isPlayerTwo,
+  randomId,
+} from '@/utils/socketHelpers'
 import {
   getMovesInGame,
   joinGameOrNewGame,
@@ -15,6 +19,7 @@ import {
   buildBoardState,
   getCurrentPlayState,
   getInitialGameState,
+  hasStackCountForWin,
 } from '@/utils/gameUtils'
 
 export default async function onSocketConnection(socket: Socket) {
@@ -79,7 +84,17 @@ export default async function onSocketConnection(socket: Socket) {
           { id: nextMoveId, ...nextMove },
         ]
         const boardState = buildBoardState(newMoves, socket.data.gameState)
-        const playState = getCurrentPlayState(player, socket.data.gameState)
+        const hasWon = hasStackCountForWin(
+          player,
+          gamePieceId,
+          boardState,
+          socket.data.gameState,
+        )
+        console.log('Do we have a winner?', hasWon)
+
+        const playState = hasWon
+          ? getWinningPlayerState(player, socket.data.gameState)
+          : getCurrentPlayState(player, socket.data.gameState)
         socket
           .to(`game-${gameId}`)
           .emit('updatedBoard', { boardState, playState })
