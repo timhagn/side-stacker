@@ -63,7 +63,7 @@ export async function getLastOpenGame(playerId: string) {
   return null
 }
 
-export async function getGameById(gameId: number) {
+export async function getGameById(gameId: number): Promise<GameStack | null> {
   const db = await openDb()
   if (db) {
     const result = await db.get(
@@ -125,7 +125,7 @@ export async function loadGameForPlayer(playerId = ''): Promise<GameStack> {
 
 export async function getMovesInGame(
   gameId: number,
-): Promise<PlayStack[] | null> {
+): Promise<PlayStack[] | []> {
   const db = await openDb()
   if (db) {
     const result = await db.all<PlayStack[]>(
@@ -141,7 +141,7 @@ export async function getMovesInGame(
       return result
     }
   }
-  return null
+  return []
 }
 
 export async function getLastMoveInGame(

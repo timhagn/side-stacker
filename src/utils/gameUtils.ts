@@ -3,8 +3,10 @@ import {
   GamePieceBoardState,
   GamePieceId,
   GamePieceStates,
+  PlayStates,
 } from '@/types/gameStateTypes'
 import { BOARD_COLS, BOARD_ROWS } from '@/const/gameConstants'
+import { getOpposingPlayer, isPlayerTwo } from '@/utils/socketHelpers'
 
 export const initializeBoard = (): GamePieceBoardState =>
   [...new Array(BOARD_ROWS)].map((_) =>
@@ -57,3 +59,27 @@ export const isLegalMove = (
 export const isLegalMoveCurried =
   (currentBoard: GamePieceBoardState) => (gamePieceId: GamePieceId) =>
     isLegalMove(gamePieceId, currentBoard)
+
+export const getInitialGameState = (
+  gameState: GameStack,
+  existingMoves?: PlayStack[],
+) => {
+  const lastMove = existingMoves?.at(-1)
+  if (!lastMove) {
+    return PlayStates.playerOneTurn
+  }
+  const wasLastMoveByPlayerTwo = isPlayerTwo(lastMove.player, gameState)
+  return wasLastMoveByPlayerTwo
+    ? PlayStates.playerOneTurn
+    : PlayStates.playerTwoTurn
+}
+
+export const getCurrentPlayState = (
+  currentPlayer: string,
+  gameState: GameStack,
+) => {
+  const opposingPlayer = getOpposingPlayer(currentPlayer, gameState)
+  return opposingPlayer === gameState.playerTwo
+    ? PlayStates.playerTwoTurn
+    : PlayStates.playerOneTurn
+}

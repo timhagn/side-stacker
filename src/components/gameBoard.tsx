@@ -1,6 +1,6 @@
 'use client'
 
-import { ChangeEventHandler, useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { io, Socket } from 'socket.io-client'
 import { ClientToServerEvents, ServerToClientEvents } from '@/types/socketTypes'
 import { PORT } from '@/const/socketConstants'
@@ -23,15 +23,17 @@ let socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
 
 interface GameBoardProps extends GameBoardState {
   initialGameState: GameStack
+  playState: PlayStates
 }
 
 export default function GameBoard({
   gameBoard,
   initialGameState,
+  playState,
 }: GameBoardProps) {
   const [currentBoard, setCurrentBoard] = useState(gameBoard)
   const [currentGameState, setCurrentGameState] = useState(initialGameState)
-  const [currentPlayState, setCurrentPlayState] = useState(PlayStates.waiting)
+  const [currentPlayState, setCurrentPlayState] = useState(playState)
 
   const socketInitializer = async () => {
     if (!socket?.connected) {
@@ -51,23 +53,25 @@ export default function GameBoard({
 
       socket.on('connect', () => {
         console.log('Connected', socket.id)
-        // TODO: emit player state (whose turn it is) & wait for playerTwo
       })
 
-      socket.on('playerTwoJoined', (gameState) => {
+      socket.on('playerTwoJoined', ({ gameState, playState }) => {
+        console.log(gameState)
         setCurrentGameState(gameState)
-        setTimeout(() => setCurrentPlayState(PlayStates.ownTurn), 1000)
+        setCurrentPlayState(playState)
         // TODO: emit player state (whose turn it is) & wait for playerTwo
       })
 
       // If we didn't have a sessionId set when connecting,
       // the server will create one for us.
-      socket.on('session', (sessionId) => {
+      socket.on('session', ({ sessionId, gameState, playState }) => {
         console.log('session', sessionId)
         // Attach the sessionId to the next reconnection attempts.
         socket.auth = { sessionId }
         // Store it in a cookie.
         setSessionIdCookie(sessionId)
+        setCurrentGameState(gameState)
+        setCurrentPlayState(playState)
       })
 
       socket.on('connect_error', async (err) => {
@@ -75,27 +79,29 @@ export default function GameBoard({
         await fetch('/api/socket')
       })
 
-      socket.on('updatedBoard', (currentBoard) => {
-        console.log('New board received', currentBoard)
-        setCurrentBoard(currentBoard)
+      socket.on('updatedBoard', ({ boardState, playState }) => {
+        console.log(
+          'New board & play state received as ACK',
+          boardState,
+          playState,
+        )
+        setCurrentBoard(boardState)
+        setCurrentPlayState(playState)
       })
     }
-  }
-
-  const sendMessageHandler: ChangeEventHandler<HTMLInputElement> = async (
-    e,
-  ) => {
-    if (!socket) return
-    const value = e.target.value
-    socket.emit('createdMessage', value)
   }
 
   const onPieceClick = useCallback(
     (gamePieceId: GamePieceId) => {
       if (!socket || !isLegalMove(gamePieceId, currentBoard)) return
-      socket.emit('setPiece', gamePieceId, (currentBoard) => {
-        console.log('New board received as ACK', currentBoard)
-        setCurrentBoard(currentBoard)
+      socket.emit('setPiece', gamePieceId, ({ boardState, playState }) => {
+        console.log(
+          'New board & play state received as ACK',
+          boardState,
+          playState,
+        )
+        setCurrentBoard(boardState)
+        setCurrentPlayState(playState)
       })
     },
     [currentBoard],
@@ -110,7 +116,7 @@ export default function GameBoard({
       <GameBoardDisplay gameBoard={currentBoard} onPieceClick={onPieceClick} />
       <PlayerInfo gameState={currentGameState} />
       {/* TODO: set turnInfo according to currentPlayState */}
-      <TurnInfo gameState={currentGameState} />
+      <TurnInfo gameState={currentGameState} playState={currentPlayState} />
     </div>
   )
 }

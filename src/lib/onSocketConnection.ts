@@ -1,15 +1,21 @@
 import { Socket } from 'socket.io'
-import { getOpposingPlayer, randomId } from '@/utils/socketHelpers'
+import { isPlayerTwo, randomId } from '@/utils/socketHelpers'
 import {
   getMovesInGame,
   joinGameOrNewGame,
   writeNextMove,
 } from '@/lib/sqliteDb'
-import { GamePieceBoardState, GamePieceId } from '@/types/gameStateTypes'
 import { GameMove, PlayStack } from '@/types/dbTypes'
-import { buildBoardState } from '@/utils/gameUtils'
-import { whoAmI } from '@/utils/playerUtils'
-import { playerTwoText } from '@/const/playerConstants'
+import {
+  GamePieceBoardState,
+  GamePieceId,
+  PlayStates,
+} from '@/types/gameStateTypes'
+import {
+  buildBoardState,
+  getCurrentPlayState,
+  getInitialGameState,
+} from '@/utils/gameUtils'
 
 export default async function onSocketConnection(socket: Socket) {
   const sessionId = socket.data.sessionId
@@ -19,10 +25,16 @@ export default async function onSocketConnection(socket: Socket) {
     console.log('creating new session')
     const newSessionId = randomId()
     const result = await joinGameOrNewGame(newSessionId)
-    console.log('test result', result)
     socket.data.sessionId = newSessionId
     socket.data.gameState = result
-    socket.emit('session', newSessionId)
+    const moves = await getMovesInGame(result!.id)
+    const playState = getInitialGameState(socket.data.gameState, moves)
+
+    socket.emit('session', {
+      sessionId: newSessionId,
+      gameState: socket.data.gameState,
+      playState,
+    })
   }
 
   const gameId = socket.data.gameState?.id
@@ -30,21 +42,26 @@ export default async function onSocketConnection(socket: Socket) {
     socket.join(`game-${gameId}`)
   }
 
-  if (whoAmI(socket.data.gameState) === playerTwoText) {
-    socket.to(`game-${gameId}`).emit('playerTwoJoined')
+  if (isPlayerTwo(socket.data.sessionId, socket.data.gameState)) {
+    console.log('Player two joined')
+    const moves = await getMovesInGame(socket.data.gameState)
+    const playState = getInitialGameState(socket.data.gameState, moves)
+    socket
+      .to(`game-${gameId}`)
+      .emit('playerTwoJoined', { gameState: socket.data.gameState, playState })
   }
 
   console.log('New connection (SERVER)', socket.id)
-  const createdMessage = (msg: string) => {
-    console.log('New message', msg)
-    socket.broadcast.emit('newIncomingMessage', msg)
-  }
-
-  socket.on('createdMessage', createdMessage)
 
   const setPiece = async (
     gamePieceId: GamePieceId,
-    callback: (boardState: GamePieceBoardState) => void,
+    callback: ({
+      boardState,
+      playState,
+    }: {
+      boardState: GamePieceBoardState
+      playState: PlayStates
+    }) => void,
   ) => {
     const player = socket.data.sessionId
     const gameId = socket.data.gameState?.id
@@ -61,10 +78,12 @@ export default async function onSocketConnection(socket: Socket) {
           ...((moves as PlayStack[]) || []),
           { id: nextMoveId, ...nextMove },
         ]
-        const newBoard = buildBoardState(newMoves, socket.data.gameState)
-        const opposingPlayer = getOpposingPlayer(player, socket.data.gameState)
-        socket.to(`game-${gameId}`).emit('updatedBoard', newBoard)
-        callback(newBoard)
+        const boardState = buildBoardState(newMoves, socket.data.gameState)
+        const playState = getCurrentPlayState(player, socket.data.gameState)
+        socket
+          .to(`game-${gameId}`)
+          .emit('updatedBoard', { boardState, playState })
+        callback({ boardState, playState })
       }
     }
   }

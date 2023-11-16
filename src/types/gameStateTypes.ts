@@ -25,6 +25,6 @@ export interface GamePieceId {
 
 export enum PlayStates {
   waiting,
-  ownTurn,
-  otherPlayerTurn,
+  playerOneTurn,
+  playerTwoTurn,
 }

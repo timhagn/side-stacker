@@ -1,7 +1,6 @@
 'use client'
 import { GameStack } from '@/types/dbTypes'
 import { whoAmI } from '@/utils/playerUtils'
-import { useEffect, useState } from 'react'
 import { useClient } from '@/hooks/useClient'
 
 interface PlayerInfoProps {
