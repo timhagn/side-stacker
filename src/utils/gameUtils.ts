@@ -126,6 +126,7 @@ export const checkStackCountRecursive = ({
       gamePieceState,
       currentPosition: nextPosition,
       currentBoard,
+      // TODO: check if the bug does continue here...
       currentCount: currentCount + 1,
       stepIndex,
     }
@@ -152,7 +153,9 @@ export const hasStackCountForWin = (
       gamePieceState,
       currentPosition,
       currentBoard,
-      currentCount: stepCount,
+      // TODO: I guess this was the bug... % ):
+      //       currentCount: stepCount,
+      currentCount: 1,
       stepIndex: index,
     }
     stepCount = checkStackCountRecursive(nextStepData)
