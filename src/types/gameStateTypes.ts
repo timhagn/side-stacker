@@ -27,6 +27,7 @@ export enum PlayStates {
   playerTwoTurn,
   playerOneWon,
   playerTwoWon,
+  playersTied,
 }
 
 export interface CurrentStep {

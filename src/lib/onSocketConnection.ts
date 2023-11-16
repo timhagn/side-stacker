@@ -84,6 +84,9 @@ export default async function onSocketConnection(socket: Socket) {
           { id: nextMoveId, ...nextMove },
         ]
         const boardState = buildBoardState(newMoves, socket.data.gameState)
+        // TODO: check if newMoves exceeds 49, thus all fields are filled.
+        // playState = PlayStates.playersTied
+
         const hasWon = hasStackCountForWin(
           player,
           gamePieceId,

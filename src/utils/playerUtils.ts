@@ -6,12 +6,14 @@ import {
   playerOneLosingText,
   playerOneText,
   playerOneWinningText,
+  playersTiedText,
   playerTwoLosingText,
   playerTwoText,
   playerTwoWinningText,
   waiting,
 } from '@/const/playerConstants'
 import { PlayStates } from '@/types/gameStateTypes'
+import { Simulate } from 'react-dom/test-utils'
 
 export const whoAmI = (gameState: GameStack) => {
   const sessionId = getSessionIdCookie()
@@ -42,6 +44,8 @@ export const whichTurn = (gameState: GameStack, playState: PlayStates) => {
       return sessionId === gameState?.playerTwo
         ? playerTwoWinningText
         : playerOneLosingText
+    case playState === PlayStates.playersTied:
+      return playersTiedText
     default:
       return ''
   }
