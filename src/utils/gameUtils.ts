@@ -39,7 +39,7 @@ export const isLegalMove = (
   currentBoard: GamePieceBoardState,
 ) => {
   const { row, col } = gamePieceId
-  // Early break if it's not and empty field.
+  // Early break if it's not an empty field.
   if (currentBoard[row][col] !== GamePieceStates.empty) {
     return false
   }
