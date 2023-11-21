@@ -21,7 +21,9 @@ import {
   getCurrentPlayState,
   getInitialGameState,
   hasStackCountForWin,
+  isGameOver,
 } from '@/utils/gameUtils'
+import { BOARD_COLS, BOARD_ROWS } from '@/const/gameConstants'
 
 export default async function onSocketConnection(socket: Socket) {
   const sessionId = socket.data.sessionId
@@ -85,24 +87,27 @@ export default async function onSocketConnection(socket: Socket) {
           ...((moves as PlayStack[]) || []),
           { id: nextMoveId, ...nextMove },
         ]
-        console.log('move count', newMoves.length)
+
         const boardState = buildBoardState(newMoves, socket.data.gameState)
-        // TODO: check if newMoves exceeds 49, thus all fields are filled.
-        // playState = PlayStates.playersTied
+        let playState
 
-        const hasWon = hasStackCountForWin(
-          player,
-          gamePieceId,
-          boardState,
-          socket.data.gameState,
-        )
-        console.log('Do we have a winner?', hasWon)
+        if (newMoves.length >= BOARD_ROWS * BOARD_COLS) {
+          playState = PlayStates.playersTied
+        } else {
+          const hasWon = hasStackCountForWin(
+            player,
+            gamePieceId,
+            boardState,
+            socket.data.gameState,
+          )
+          console.log('Do we have a winner?', hasWon)
 
-        const playState = hasWon
-          ? getWinningPlayerState(player, socket.data.gameState)
-          : getCurrentPlayState(player, socket.data.gameState)
+          playState = hasWon
+            ? getWinningPlayerState(player, socket.data.gameState)
+            : getCurrentPlayState(player, socket.data.gameState)
+        }
 
-        if (hasWon) {
+        if (isGameOver(playState)) {
           await updateWinningOrTiedGame(gameId)
           socket.data.gameState.gameState = GameState.FINISHED
         }
