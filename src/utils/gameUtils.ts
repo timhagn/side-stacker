@@ -70,6 +70,13 @@ export const isLegalMoveCurried =
   (currentBoard: GamePieceBoardState) => (gamePieceId: GamePieceId) =>
     isLegalMove(gamePieceId, currentBoard)
 
+export const isGameOver = (playState: PlayStates) =>
+  [
+    PlayStates.playerOneWon,
+    PlayStates.playerTwoWon,
+    PlayStates.playersTied,
+  ].includes(playState)
+
 export const getInitialGameState = (
   gameState: GameStack,
   existingMoves?: PlayStack[],
@@ -114,7 +121,7 @@ export const checkStackCountRecursive = ({
   }
   const { x, y } = nextPosition
   // Break early if we are outside the board.
-  if (x < 0 || x > BOARD_COLS || y < 0 || y > BOARD_ROWS) {
+  if (x < 0 || x >= BOARD_COLS || y < 0 || y >= BOARD_ROWS) {
     return currentCount
   }
   // Early break if it's an empty field or has an opposing piece.

@@ -7,9 +7,10 @@ import {
 import {
   getMovesInGame,
   joinGameOrNewGame,
+  updateWinningOrTiedGame,
   writeNextMove,
 } from '@/lib/sqliteDb'
-import { GameMove, PlayStack } from '@/types/dbTypes'
+import { GameMove, GameState, PlayStack } from '@/types/dbTypes'
 import {
   GamePieceBoardState,
   GamePieceId,
@@ -70,7 +71,8 @@ export default async function onSocketConnection(socket: Socket) {
   ) => {
     const player = socket.data.sessionId
     const gameId = socket.data.gameState?.id
-    if (gameId && gameId !== -1) {
+    const currentGameState = socket.data.gameState.gameState
+    if (gameId && gameId !== -1 && currentGameState === GameState.OPEN) {
       const moves = await getMovesInGame(gameId)
       const lastMove = moves?.at(-1)
       if (!lastMove || lastMove?.player !== player) {
@@ -83,6 +85,7 @@ export default async function onSocketConnection(socket: Socket) {
           ...((moves as PlayStack[]) || []),
           { id: nextMoveId, ...nextMove },
         ]
+        console.log('move count', newMoves.length)
         const boardState = buildBoardState(newMoves, socket.data.gameState)
         // TODO: check if newMoves exceeds 49, thus all fields are filled.
         // playState = PlayStates.playersTied
@@ -98,7 +101,12 @@ export default async function onSocketConnection(socket: Socket) {
         const playState = hasWon
           ? getWinningPlayerState(player, socket.data.gameState)
           : getCurrentPlayState(player, socket.data.gameState)
-        // TODO: WRITE FINISHED TO THE DB when the bug is solved
+
+        if (hasWon) {
+          await updateWinningOrTiedGame(gameId)
+          socket.data.gameState.gameState = GameState.FINISHED
+        }
+
         socket
           .to(`game-${gameId}`)
           .emit('updatedBoard', { boardState, playState })

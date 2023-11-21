@@ -177,3 +177,24 @@ export async function writeNextMove(playerMove: GameMove) {
     console.log('WROTE MOVE', result)
   }
 }
+
+export async function updateWinningOrTiedGame(gameId: string) {
+  const db = await openDb()
+  if (db) {
+    try {
+      const result = await db.run(
+        `UPDATE ${GAME_TABLE}
+           SET gameState = ?
+           WHERE id = ?`,
+        GameState.FINISHED,
+        gameId,
+      )
+      if (result) {
+        return true
+      }
+    } catch (err) {
+      console.log(err)
+      return false
+    }
+  }
+}

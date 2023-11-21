@@ -2,14 +2,17 @@ import {
   GamePieceHoverState,
   GamePieceId,
   GamePieceStates,
+  PlayStates,
 } from '@/types/gameStateTypes'
 import { useState } from 'react'
+import { isGameOver } from '@/utils/gameUtils'
 
 interface GamePieceProps {
   gamePieceState: GamePieceStates
   gamePieceId: GamePieceId
   onPieceClick: (gamePieceId: GamePieceId) => void
   isLegalMoveCurried: (gamePieceId: GamePieceId) => boolean
+  playState: PlayStates
 }
 
 export default function GamePiece({
@@ -17,6 +20,7 @@ export default function GamePiece({
   gamePieceId,
   onPieceClick,
   isLegalMoveCurried,
+  playState,
 }: GamePieceProps) {
   const [hoverState, setHoverState] = useState<GamePieceHoverState>(
     GamePieceHoverState.notHovered,
@@ -45,7 +49,7 @@ export default function GamePiece({
   const onPieceOut = () => setHoverState(GamePieceHoverState.notHovered)
 
   const hoverClass =
-    hoverState === GamePieceHoverState.notHovered
+    hoverState === GamePieceHoverState.notHovered || isGameOver(playState)
       ? ''
       : hoverState === GamePieceHoverState.legal
         ? 'hover:outline hover:outline-offset-2 hover:outline-2 hover:outline-emerald-400'

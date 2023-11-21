@@ -7,7 +7,7 @@ import { PORT } from '@/const/socketConstants'
 import { getSessionIdCookie, setSessionIdCookie } from '@/utils/cookieUtils'
 import { GameBoardState, GamePieceId, PlayStates } from '@/types/gameStateTypes'
 import GameBoardDisplay from '@/components/gameBoardDisplay'
-import { isLegalMove } from '@/utils/gameUtils'
+import { isGameOver, isLegalMove } from '@/utils/gameUtils'
 import { GameStack } from '@/types/dbTypes'
 import PlayerInfo from '@/components/playerInfo'
 import TurnInfo from '@/components/turnInfo'
@@ -93,7 +93,12 @@ export default function GameBoard({
 
   const onPieceClick = useCallback(
     (gamePieceId: GamePieceId) => {
-      if (!socket || !isLegalMove(gamePieceId, currentBoard)) return
+      if (
+        !socket ||
+        !isLegalMove(gamePieceId, currentBoard) ||
+        isGameOver(currentPlayState)
+      )
+        return
       socket.emit('setPiece', gamePieceId, ({ boardState, playState }) => {
         console.log(
           'New board & play state received as ACK',
@@ -104,7 +109,7 @@ export default function GameBoard({
         setCurrentPlayState(playState)
       })
     },
-    [currentBoard],
+    [currentBoard, currentPlayState],
   )
 
   useEffect(() => {
@@ -113,7 +118,11 @@ export default function GameBoard({
 
   return (
     <div className="flex flex-col">
-      <GameBoardDisplay gameBoard={currentBoard} onPieceClick={onPieceClick} />
+      <GameBoardDisplay
+        gameBoard={currentBoard}
+        onPieceClick={onPieceClick}
+        playState={currentPlayState}
+      />
       <PlayerInfo gameState={currentGameState} />
       {/* TODO: set turnInfo according to currentPlayState */}
       <TurnInfo gameState={currentGameState} playState={currentPlayState} />
