@@ -107,7 +107,12 @@ export const checkStackCountRecursive = ({
   currentCount: number
   stepIndex: number
 }): number => {
-  const { x, y } = currentPosition
+  const { x: row, y: col } = currentPosition
+  const nextPosition: CurrentStep = {
+    x: row + STEPS_TO_CHECK[stepIndex].x,
+    y: col + STEPS_TO_CHECK[stepIndex].y,
+  }
+  const { x, y } = nextPosition
   // Break early if we are outside the board.
   if (x < 0 || x > BOARD_COLS || y < 0 || y > BOARD_ROWS) {
     return currentCount
@@ -118,15 +123,10 @@ export const checkStackCountRecursive = ({
   }
   // Go to the next board field if it's a piece of the Player.
   if (currentBoard[x][y] === gamePieceState) {
-    const nextPosition: CurrentStep = {
-      x: x + STEPS_TO_CHECK[stepIndex].x,
-      y: y + STEPS_TO_CHECK[stepIndex].y,
-    }
     const nextStepData = {
       gamePieceState,
       currentPosition: nextPosition,
       currentBoard,
-      // TODO: check if the bug does continue here...
       currentCount: currentCount + 1,
       stepIndex,
     }
@@ -141,16 +141,14 @@ export const hasStackCountForWin = (
   currentBoard: GamePieceBoardState,
   gameState: GameStack,
 ) => {
-  // TODO: check why it sometimes just counts non-bordering pieces!
   const gamePieceState = getGamePieceStateForPlayer(currentPlayer, gameState)
+  const currentPosition: CurrentStep = {
+    x: gamePieceId.row,
+    y: gamePieceId.col,
+  }
   for (let index = 0; index < STEPS_TO_CHECK.length; index += 2) {
-    // TODO: has to be 0 else both calls add 1. Also move it into the function
-    //       itself as you then don't have to replicate it here...
     let stepCount = 0
-    const currentPosition: CurrentStep = {
-      x: gamePieceId.row + STEPS_TO_CHECK[index].x,
-      y: gamePieceId.col + STEPS_TO_CHECK[index].y,
-    }
+
     const nextStepData = {
       gamePieceState,
       currentPosition,
@@ -160,16 +158,11 @@ export const hasStackCountForWin = (
     }
     stepCount = checkStackCountRecursive(nextStepData)
 
-    nextStepData.currentPosition = {
-      x: gamePieceId.row + STEPS_TO_CHECK[index + 1].x,
-      y: gamePieceId.col + STEPS_TO_CHECK[index + 1].y,
-    }
     nextStepData.stepIndex = index + 1
-
+    nextStepData.currentCount = 0
     stepCount += checkStackCountRecursive(nextStepData)
 
-    // TODO: check here for +1?
-    if (stepCount + 1 > COUNT_TILL_WON) {
+    if (stepCount + 1 >= COUNT_TILL_WON) {
       console.log(stepCount)
       return true
     }

@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "npx vitest"
   },
   "dependencies": {
     "next": "14.0.2",
@@ -33,6 +34,7 @@
     "prettier": "^3.1.0",
     "tailwindcss": "^3",
     "typescript": "^5",
-    "utf-8-validate": "^6.0.3"
+    "utf-8-validate": "5.0.2",
+    "vitest": "^0.34.6"
   }
 }
