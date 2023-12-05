@@ -13,9 +13,15 @@ import {
   waiting,
 } from '@/const/playerConstants'
 import { PlayStates } from '@/types/gameStateTypes'
-import { Simulate } from 'react-dom/test-utils'
 
-export const whoAmI = (gameState: GameStack) => {
+/**
+ * Checks the sessionId (player ID) against the current Game Stack state to
+ * determine who is the current player.
+ *
+ * @param {GameStack}   gameState   The current GameStack state.
+ * @returns string
+ */
+export const whoAmI = (gameState: GameStack): string => {
   const sessionId = getSessionIdCookie()
   switch (true) {
     case sessionId === gameState?.playerOne:
@@ -27,7 +33,17 @@ export const whoAmI = (gameState: GameStack) => {
   }
 }
 
-export const whichTurn = (gameState: GameStack, playState: PlayStates) => {
+/**
+ * Determines which text to display for the current GameStack & play states.
+ *
+ * @param {GameStack}   gameState   The current GameStack state.
+ * @param {PlayStates}  playState   The current play state.
+ * @returns string
+ */
+export const getTurnInfoText = (
+  gameState: GameStack,
+  playState: PlayStates,
+) => {
   const sessionId = getSessionIdCookie()
   switch (true) {
     case !gameState?.playerTwo:

@@ -1,6 +1,6 @@
 'use client'
 import { GameStack, GameState } from '@/types/dbTypes'
-import { whichTurn, whoAmI } from '@/utils/playerUtils'
+import { getTurnInfoText, whoAmI } from '@/utils/playerUtils'
 import { useClient } from '@/hooks/useClient'
 import { PlayStates } from '@/types/gameStateTypes'
 
@@ -11,7 +11,7 @@ interface TurnInfoProps {
 
 export default function TurnInfo({ gameState, playState }: TurnInfoProps) {
   const isClient = useClient()
-  const turnText = whichTurn(gameState, playState)
+  const turnText = getTurnInfoText(gameState, playState)
   return (
     <div className="mt-6 text-center">
       <h2>{isClient ? turnText : ''}</h2>
