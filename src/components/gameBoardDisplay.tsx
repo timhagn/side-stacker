@@ -1,10 +1,10 @@
+import GamePiece from '@/components/gamePiece'
 import {
   GameBoardState,
   GamePieceId,
   GamePieceStates,
   PlayStates,
 } from '@/types/gameStateTypes'
-import GamePiece from '@/components/gamePiece'
 import { isLegalMoveCurried } from '@/utils/gameUtils'
 
 interface GameBoardDisplayProps extends GameBoardState {

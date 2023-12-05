@@ -1,10 +1,11 @@
+import { useState } from 'react'
+
 import {
   GamePieceHoverState,
   GamePieceId,
   GamePieceStates,
   PlayStates,
 } from '@/types/gameStateTypes'
-import { useState } from 'react'
 import { isGameOver } from '@/utils/gameUtils'
 
 interface GamePieceProps {

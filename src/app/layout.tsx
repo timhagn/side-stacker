@@ -1,9 +1,11 @@
-import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { ReactNode } from 'react'
-import { openDb } from '@/lib/sqliteDb'
 import { Database } from 'sqlite'
+
+import { openDb } from '@/lib/sqliteDb'
+
+import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 

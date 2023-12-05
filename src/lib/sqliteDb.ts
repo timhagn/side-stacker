@@ -1,6 +1,9 @@
 'use server'
-import sqlite3 from 'sqlite3'
+
 import { open } from 'sqlite'
+import sqlite3 from 'sqlite3'
+import { Database } from 'sqlite/build/Database'
+
 import {
   CREATE_GAME_TABLE_QUERY,
   CREATE_PLAY_TABLE_QUERY,
@@ -10,7 +13,6 @@ import {
   PLAY_TABLE,
 } from '@/const/dbConstants'
 import { GameMove, GameStack, GameState, PlayStack } from '@/types/dbTypes'
-import { Database } from 'sqlite/build/Database'
 
 const DB_FILENAME =
   process.env.NODE_ENV === 'production'

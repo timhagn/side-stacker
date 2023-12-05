@@ -1,5 +1,6 @@
-import './globals.css'
 import SideStackerGame from '@/components/sideStackerGame'
+
+import './globals.css'
 
 export default function Home() {
   return (

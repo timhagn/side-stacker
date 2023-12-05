@@ -1,16 +1,17 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { io, Socket } from 'socket.io-client'
-import { ClientToServerEvents, ServerToClientEvents } from '@/types/socketTypes'
-import { PORT } from '@/const/socketConstants'
-import { getSessionIdCookie, setSessionIdCookie } from '@/utils/cookieUtils'
-import { GameBoardState, GamePieceId, PlayStates } from '@/types/gameStateTypes'
+import { Socket, io } from 'socket.io-client'
+
 import GameBoardDisplay from '@/components/gameBoardDisplay'
-import { isGameOver, isLegalMove } from '@/utils/gameUtils'
-import { GameStack } from '@/types/dbTypes'
 import PlayerInfo from '@/components/playerInfo'
 import TurnInfo from '@/components/turnInfo'
+import { PORT } from '@/const/socketConstants'
+import { GameStack } from '@/types/dbTypes'
+import { GameBoardState, GamePieceId, PlayStates } from '@/types/gameStateTypes'
+import { ClientToServerEvents, ServerToClientEvents } from '@/types/socketTypes'
+import { getSessionIdCookie, setSessionIdCookie } from '@/utils/cookieUtils'
+import { isGameOver, isLegalMove } from '@/utils/gameUtils'
 
 let socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
   `:${PORT + 1}`,

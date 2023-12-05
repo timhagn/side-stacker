@@ -1,3 +1,9 @@
+import {
+  BOARD_COLS,
+  BOARD_ROWS,
+  COUNT_TILL_WON,
+  STEPS_TO_CHECK,
+} from '@/const/gameConstants'
 import { GameStack, PlayStack } from '@/types/dbTypes'
 import {
   CurrentStep,
@@ -7,12 +13,6 @@ import {
   PlayStates,
   StackCount,
 } from '@/types/gameStateTypes'
-import {
-  BOARD_COLS,
-  BOARD_ROWS,
-  COUNT_TILL_WON,
-  STEPS_TO_CHECK,
-} from '@/const/gameConstants'
 import {
   getGamePieceStateForPlayer,
   getOpposingPlayer,

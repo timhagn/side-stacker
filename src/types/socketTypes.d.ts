@@ -1,13 +1,14 @@
-import { NextResponse } from 'next/server'
 import { Server as HTTPServer } from 'http'
-import { Server as IOServer } from 'socket.io'
 import { Socket as NetSocket } from 'net'
+import { NextResponse } from 'next/server'
+import { Server as IOServer } from 'socket.io'
+
+import { GameStack, GameState } from '@/types/dbTypes'
 import {
   GamePieceBoardState,
   GamePieceId,
   PlayStates,
 } from '@/types/gameStateTypes'
-import { GameStack, GameState } from '@/types/dbTypes'
 
 /**
  * Socket.io types

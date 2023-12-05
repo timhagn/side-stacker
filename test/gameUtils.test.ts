@@ -1,6 +1,7 @@
 import { expect, test } from 'vitest'
-import { hasStackCountForWin } from '@/utils/gameUtils'
+
 import { GameStack, GameState } from '@/types/dbTypes'
+import { hasStackCountForWin } from '@/utils/gameUtils'
 
 const mockGameState: GameStack = {
   id: 4,

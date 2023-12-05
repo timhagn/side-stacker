@@ -1,9 +1,6 @@
 import { Socket } from 'socket.io'
-import {
-  getWinningPlayerState,
-  isPlayerTwo,
-  randomId,
-} from '@/utils/socketHelpers'
+
+import { BOARD_COLS, BOARD_ROWS } from '@/const/gameConstants'
 import {
   getMovesInGame,
   joinGameOrNewGame,
@@ -23,7 +20,11 @@ import {
   hasStackCountForWin,
   isGameOver,
 } from '@/utils/gameUtils'
-import { BOARD_COLS, BOARD_ROWS } from '@/const/gameConstants'
+import {
+  getWinningPlayerState,
+  isPlayerTwo,
+  randomId,
+} from '@/utils/socketHelpers'
 
 /**
  * Socket Connection Handler.

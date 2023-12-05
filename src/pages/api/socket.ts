@@ -1,6 +1,8 @@
 import { NextRequest } from 'next/server'
 import { Server } from 'socket.io'
-import onSocketConnection from '../../lib/onSocketConnection'
+
+import { PORT } from '@/const/socketConstants'
+import { loadGameForPlayer } from '@/lib/sqliteDb'
 import {
   ClientToServerEvents,
   InterServerEvents,
@@ -8,8 +10,8 @@ import {
   ServerToClientEvents,
   SocketData,
 } from '@/types/socketTypes'
-import { PORT } from '@/const/socketConstants'
-import { loadGameForPlayer } from '@/lib/sqliteDb'
+
+import onSocketConnection from '../../lib/onSocketConnection'
 
 export const config = {
   api: {

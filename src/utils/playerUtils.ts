@@ -1,18 +1,18 @@
-import { GameStack } from '@/types/dbTypes'
-import { getSessionIdCookie } from '@/utils/cookieUtils'
 import {
   otherPlayerTurn,
   ownTurn,
   playerOneLosingText,
   playerOneText,
   playerOneWinningText,
-  playersTiedText,
   playerTwoLosingText,
   playerTwoText,
   playerTwoWinningText,
+  playersTiedText,
   waiting,
 } from '@/const/playerConstants'
+import { GameStack } from '@/types/dbTypes'
 import { PlayStates } from '@/types/gameStateTypes'
+import { getSessionIdCookie } from '@/utils/cookieUtils'
 
 /**
  * Checks the sessionId (player ID) against the current Game Stack state to

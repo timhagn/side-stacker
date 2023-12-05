@@ -1,19 +1,20 @@
 'use server'
 
+import { cookies } from 'next/headers'
+
 import GameBoard from '@/components/gameBoard'
 import {
   getMovesInGame,
   joinGameOrNewGame,
   loadGameForPlayer,
 } from '@/lib/sqliteDb'
-import { cookies } from 'next/headers'
+import { PlayStates } from '@/types/gameStateTypes'
 import { SESSION_ID_COOKIE_NAME } from '@/utils/cookieUtils'
 import {
   buildBoardState,
   getInitialGameState,
   initializeBoard,
 } from '@/utils/gameUtils'
-import { PlayStates } from '@/types/gameStateTypes'
 
 export default async function SideStackerGame() {
   const cookieStore = cookies()
