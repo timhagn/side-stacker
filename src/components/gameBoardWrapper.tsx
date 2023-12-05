@@ -5,7 +5,7 @@ import { GameBoardProps } from '@/types/gameStateTypes'
 import { useEffect, useState } from 'react'
 
 const GameBoard = dynamic(() => import('./gameBoard'), {
-  loading: () => <p className="text-4xl h-1/2">Initializing...</p>,
+  loading: () => <p className="text-4xl h-[456px]">Initializing...</p>,
 })
 
 export default function GameBoardWrapper(gameBoardProps: GameBoardProps) {
@@ -20,5 +20,9 @@ export default function GameBoardWrapper(gameBoardProps: GameBoardProps) {
       void initSocketServer()
     }
   })
-  return serverActive ? <GameBoard {...gameBoardProps} /> : null
+  return serverActive ? (
+    <GameBoard {...gameBoardProps} />
+  ) : (
+    <p className="text-4xl h-[456px]">Initializing...</p>
+  )
 }
