@@ -14,7 +14,7 @@ export const randomId = (): string => crypto.randomBytes(8).toString('hex')
  *
  * @param {string}      currentPlayer   The current player.
  * @param {GameStack}   gameState       The current GameStack state.
- * @returns string
+ * @returns {string}
  */
 export const getOpposingPlayer = (
   currentPlayer: string,
@@ -29,7 +29,7 @@ export const getOpposingPlayer = (
  *
  * @param {string}      player      The player to check.
  * @param {GameStack}   gameState   The current GameStack state.
- * @returns boolean
+ * @returns {boolean}
  */
 export const isPlayerTwo = (player: string, gameState: GameStack): boolean =>
   player === gameState?.playerTwo
@@ -39,7 +39,7 @@ export const isPlayerTwo = (player: string, gameState: GameStack): boolean =>
  *
  * @param {string}      player      The player to check against.
  * @param {GameStack}   gameState   The current GameStack state.
- * @returns GamePieceStates
+ * @returns {GamePieceStates}
  */
 export const getGamePieceStateForPlayer = (
   player: string,
@@ -54,7 +54,7 @@ export const getGamePieceStateForPlayer = (
  *
  * @param {string}      player      The player to check against.
  * @param {GameStack}   gameState   The current GameStack state.
- * @returns PlayStates
+ * @returns {PlayStates}
  */
 export const getWinningPlayerState = (
   player: string,

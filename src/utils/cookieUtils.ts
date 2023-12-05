@@ -14,7 +14,7 @@ export const setSessionIdCookie = (sessionId: string) => {
 /**
  * Returns the value of the Cookie of SESSION_ID_COOKIE_NAME.
  *
- * @returns string | undefined
+ * @returns {string | undefined}
  */
 export const getSessionIdCookie = (): string | undefined => {
   if (typeof window !== 'undefined') {

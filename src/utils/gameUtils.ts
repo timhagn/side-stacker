@@ -22,7 +22,7 @@ import {
 /**
  * Initializes a new, empty Board.
  *
- * @returns GamePieceBoardState
+ * @returns {GamePieceBoardState}
  */
 export const initializeBoard = (): GamePieceBoardState =>
   [...new Array(BOARD_ROWS)].map((_) =>
@@ -49,7 +49,7 @@ export const getGamePieceState = (
  *
  * @param {PlayStack[]}   existingMoves   Existing Moves as saved in play_stack table.
  * @param {GameStack}     gameState       The current GameStack state.
- * @returns GamePieceBoardState
+ * @returns {GamePieceBoardState}
  */
 export const buildBoardState = (
   existingMoves: PlayStack[] | null,
@@ -74,7 +74,7 @@ export const buildBoardState = (
  *
  * @param {GamePieceId}           gamePieceId     The Piece to check.
  * @param {GamePieceBoardState}   currentBoard    The current Board.
- * @returns boolean
+ * @returns {boolean}
  */
 export const isLegalMove = (
   gamePieceId: GamePieceId,
@@ -111,7 +111,7 @@ export const isLegalMoveCurried =
  * Checks playState to determine a GameOver state (won or tied).
  *
  * @param {PlayStates}  playState   The current play state.
- * @returns boolean
+ * @returns {boolean}
  */
 export const isGameOver = (playState: PlayStates): boolean =>
   [
@@ -125,7 +125,7 @@ export const isGameOver = (playState: PlayStates): boolean =>
  *
  * @param {GameStack}     gameState       The current GameStack state.
  * @param {PlayStack[]}   existingMoves   Existing Moves as saved in play_stack table.
- * @returns PlayStates
+ * @returns {PlayStates}
  */
 export const getInitialGameState = (
   gameState: GameStack,
@@ -146,7 +146,7 @@ export const getInitialGameState = (
  *
  * @param {string}      currentPlayer   The current player.
  * @param {GameStack}   gameState       The current GameStack state.
- * @returns PlayStates
+ * @returns {PlayStates}
  */
 export const getCurrentPlayState = (
   currentPlayer: string,
@@ -163,7 +163,7 @@ export const getCurrentPlayState = (
  * and adds up the count of adjourning pieces of the current player.
  *
  * @param {StackCount}  currentStackCount   Tracks the current stack count.
- * @returns number
+ * @returns {number}
  */
 export const checkStackCountRecursive = ({
   gamePieceState,
@@ -209,6 +209,7 @@ export const checkStackCountRecursive = ({
  * @param {GamePieceId}           gamePieceId       The state to check the pieces against.
  * @param {GamePieceBoardState}   currentBoard      The current Game Board.
  * @param {GameStack}             gameState         The current GameStack state.
+ * @returns {boolean}
  * @see COUNT_TILL_WON
  * @see STEPS_TO_CHECK
  */

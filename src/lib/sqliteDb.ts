@@ -10,13 +10,20 @@ import {
   PLAY_TABLE,
 } from '@/const/dbConstants'
 import { GameMove, GameStack, GameState, PlayStack } from '@/types/dbTypes'
+import { Database } from 'sqlite/build/Database'
 
 const DB_FILENAME =
   process.env.NODE_ENV === 'production'
     ? `./${DB_NAME}.db`
     : `./${DB_NAME}.dev.db`
 
-export async function openDb() {
+/**
+ * Initializes the SQLite DB and creates the game_stack & play_stack tables if
+ * they don't already exist.
+ *
+ * @returns {Promise<Database | undefined>}
+ */
+export async function openDb(): Promise<Database | undefined> {
   try {
     const db = await open({
       filename: DB_FILENAME,
@@ -30,7 +37,15 @@ export async function openDb() {
   }
 }
 
-export async function newGame(playerOne: string) {
+/**
+ * Initializes a new Game by writing the ID of the first player into game_stack.
+ *
+ * @param {string}  playerOne   The ID of the first player.
+ * @returns {Promise<GameStack | undefined>}
+ */
+export async function newGame(
+  playerOne: string,
+): Promise<GameStack | undefined> {
   const db = await openDb()
   if (db) {
     const result = await db.run(
@@ -43,7 +58,15 @@ export async function newGame(playerOne: string) {
   }
 }
 
-export async function getLastOpenGame(playerId: string) {
+/**
+ * Returns the ID of the last OPEN Game for a given player ID from game_stack.
+ *
+ * @param {string}  playerId  The player ID to query for.
+ * @returns {Promise<number | null>}
+ */
+export async function getLastOpenGame(
+  playerId: string,
+): Promise<number | null> {
   const db = await openDb()
   if (db) {
     const rowId = await db.get(
@@ -63,6 +86,12 @@ export async function getLastOpenGame(playerId: string) {
   return null
 }
 
+/**
+ * Returns a Game by a given ID form game_stack.
+ *
+ * @param {number}  gameId    The Game ID to query for.
+ * @returns {Promise<GameStack | null>}
+ */
 export async function getGameById(gameId: number): Promise<GameStack | null> {
   const db = await openDb()
   if (db) {
@@ -79,7 +108,15 @@ export async function getGameById(gameId: number): Promise<GameStack | null> {
   return null
 }
 
-export async function joinGameOrNewGame(playerId: string) {
+/**
+ * Joins an OPEN Game without a second player or starts a new one.
+ *
+ * @param {string}  playerId  The player ID to query for.
+ * @returns {Promise<GameStack | null | undefined>}
+ */
+export async function joinGameOrNewGame(
+  playerId: string,
+): Promise<GameStack | null | undefined> {
   const db = await openDb()
   if (db) {
     try {
@@ -105,7 +142,17 @@ export async function joinGameOrNewGame(playerId: string) {
   }
 }
 
-export async function loadGameForPlayer(playerId = ''): Promise<GameStack> {
+/**
+ * Returns the current OPEN game for a given player ID from game_stack or an
+ * empty Game Stack to join or start a new game with `joinGameOrNewGame()`.
+ *
+ * @param {string}  playerId  The player ID to query for.
+ * @returns {Promise<GameStack>}
+ * @see {joinGameOrNewGame}
+ */
+export async function loadGameForPlayer(
+  playerId: string = '',
+): Promise<GameStack> {
   const db = await openDb()
   if (db) {
     try {
@@ -123,6 +170,12 @@ export async function loadGameForPlayer(playerId = ''): Promise<GameStack> {
   return { id: -1, playerOne: '', playerTwo: '', gameState: GameState.OPEN }
 }
 
+/**
+ * Returns all existing moves for an OPEN game from play_stack.
+ *
+ * @param {number}  gameId    The Game ID to query for.
+ * @returns {Promise<PlayStack[] | []>}
+ */
 export async function getMovesInGame(
   gameId: number,
 ): Promise<PlayStack[] | []> {
@@ -144,6 +197,12 @@ export async function getMovesInGame(
   return []
 }
 
+/**
+ * Gets the last played move from play_stack.
+ *
+ * @param {number}  gameId    The Game ID to query for.
+ * @returns {Promise<PlayStack | null>}
+ */
 export async function getLastMoveInGame(
   gameId: number,
 ): Promise<PlayStack | null> {
@@ -165,7 +224,13 @@ export async function getLastMoveInGame(
   return null
 }
 
-export async function writeNextMove(playerMove: GameMove) {
+/**
+ * Writes a given move to the play_stack table.
+ *
+ * @param {GameMove}  playerMove  The move to save to play_stack.
+ * @returns Promise<void>
+ */
+export async function writeNextMove(playerMove: GameMove): Promise<void> {
   const db = await openDb()
   if (db) {
     const result = await db.run(
@@ -178,7 +243,15 @@ export async function writeNextMove(playerMove: GameMove) {
   }
 }
 
-export async function updateWinningOrTiedGame(gameId: string) {
+/**
+ * Sets the Game State for a given Game's ID to FINISHED in game_stack.
+ *
+ * @param {number}  gameId    The Game ID to query for & update.
+ * @returns {Promise<boolean | undefined>}
+ */
+export async function updateWinningOrTiedGame(
+  gameId: string,
+): Promise<boolean | undefined> {
   const db = await openDb()
   if (db) {
     try {

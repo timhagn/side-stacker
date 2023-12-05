@@ -19,7 +19,7 @@ import { PlayStates } from '@/types/gameStateTypes'
  * determine who is the current player.
  *
  * @param {GameStack}   gameState   The current GameStack state.
- * @returns string
+ * @returns {string}
  */
 export const whoAmI = (gameState: GameStack): string => {
   const sessionId = getSessionIdCookie()
@@ -38,12 +38,12 @@ export const whoAmI = (gameState: GameStack): string => {
  *
  * @param {GameStack}   gameState   The current GameStack state.
  * @param {PlayStates}  playState   The current play state.
- * @returns string
+ * @returns {string}
  */
 export const getTurnInfoText = (
   gameState: GameStack,
   playState: PlayStates,
-) => {
+): string => {
   const sessionId = getSessionIdCookie()
   switch (true) {
     case !gameState?.playerTwo:
