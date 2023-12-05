@@ -2,7 +2,6 @@
 
 import { cookies } from 'next/headers'
 
-import GameBoard from '@/components/gameBoard'
 import {
   getMovesInGame,
   joinGameOrNewGame,
@@ -15,6 +14,7 @@ import {
   getInitialGameState,
   initializeBoard,
 } from '@/utils/gameUtils'
+import GameBoardWrapper from '@/components/gameBoardWrapper'
 
 export default async function SideStackerGame() {
   // First check for an existing session ID (player ID).
@@ -36,7 +36,7 @@ export default async function SideStackerGame() {
     playState = getInitialGameState(gameBoardState!, moves)
   }
   return (
-    <GameBoard
+    <GameBoardWrapper
       gameBoard={initialBoard}
       initialGameState={gameBoardState!}
       playState={playState}

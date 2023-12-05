@@ -6,7 +6,7 @@ import { loadGameForPlayer } from '@/lib/sqliteDb'
 import {
   ClientToServerEvents,
   InterServerEvents,
-  NextResponseWithSocket,
+  NextApiResponseWithSocket,
   ServerToClientEvents,
   SocketData,
 } from '@/types/socketTypes'
@@ -21,10 +21,11 @@ export const config = {
 
 export default async function handler(
   _: NextRequest,
-  res: NextResponseWithSocket,
+  res: NextApiResponseWithSocket,
 ) {
   if (res.socket.server.io) {
     console.log('Server already started!')
+    res.end()
     return
   }
 
@@ -57,4 +58,6 @@ export default async function handler(
   io.on('connection', onSocketConnection)
 
   console.log('Socket server started successfully!')
+
+  res.end()
 }

@@ -1,3 +1,5 @@
+import { GameStack } from '@/types/dbTypes'
+
 export enum GamePieceStates {
   'empty',
   'playerOne',
@@ -14,6 +16,11 @@ export type GamePieceBoardState = GamePieceStates[][]
 
 export interface GameBoardState {
   gameBoard: GamePieceBoardState
+}
+
+export interface GameBoardProps extends GameBoardState {
+  initialGameState: GameStack
+  playState: PlayStates
 }
 
 export interface GamePieceId {

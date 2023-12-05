@@ -7,8 +7,7 @@ import GameBoardDisplay from '@/components/gameBoardDisplay'
 import PlayerInfo from '@/components/playerInfo'
 import TurnInfo from '@/components/turnInfo'
 import { PORT } from '@/const/socketConstants'
-import { GameStack } from '@/types/dbTypes'
-import { GameBoardState, GamePieceId, PlayStates } from '@/types/gameStateTypes'
+import { GameBoardProps, GamePieceId } from '@/types/gameStateTypes'
 import { ClientToServerEvents, ServerToClientEvents } from '@/types/socketTypes'
 import { getSessionIdCookie, setSessionIdCookie } from '@/utils/cookieUtils'
 import { isGameOver, isLegalMove } from '@/utils/gameUtils'
@@ -22,11 +21,6 @@ let socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
     autoConnect: false,
   },
 )
-
-interface GameBoardProps extends GameBoardState {
-  initialGameState: GameStack
-  playState: PlayStates
-}
 
 export default function GameBoard({
   gameBoard,
