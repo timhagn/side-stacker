@@ -15,7 +15,7 @@ export default function TurnInfo({ gameState, playState }: TurnInfoProps) {
   const turnText = getTurnInfoText(gameState, playState)
   return (
     <div className="mt-6 text-center">
-      <h2>{isClient ? turnText : ''}</h2>
+      <h3 className="text-lg">{isClient ? turnText : ''}</h3>
     </div>
   )
 }

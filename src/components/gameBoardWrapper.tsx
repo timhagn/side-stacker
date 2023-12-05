@@ -5,7 +5,7 @@ import { GameBoardProps } from '@/types/gameStateTypes'
 import { useEffect, useState } from 'react'
 
 const GameBoard = dynamic(() => import('./gameBoard'), {
-  loading: () => <p>Initializing...</p>,
+  loading: () => <p className="text-4xl h-1/2">Initializing...</p>,
 })
 
 export default function GameBoardWrapper(gameBoardProps: GameBoardProps) {

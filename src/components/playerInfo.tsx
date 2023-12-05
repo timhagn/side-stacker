@@ -12,7 +12,7 @@ export default function PlayerInfo({ gameState }: PlayerInfoProps) {
   const playerText = whoAmI(gameState)
   return (
     <div className="mt-6 text-center">
-      <h1>{isClient ? playerText : ''}</h1>
+      <h2 className="text-xl">{isClient ? playerText : ''}</h2>
     </div>
   )
 }
