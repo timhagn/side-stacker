@@ -2,7 +2,7 @@
 
 import { useClient } from '@/hooks/useClient'
 import { GameStack } from '@/types/dbTypes'
-import { whoAmI } from '@/utils/playerUtils'
+import { getPlayerColor, whoAmI } from '@/utils/playerUtils'
 
 interface PlayerInfoProps {
   gameState: GameStack
@@ -10,8 +10,9 @@ interface PlayerInfoProps {
 export default function PlayerInfo({ gameState }: PlayerInfoProps) {
   const isClient = useClient()
   const playerText = whoAmI(gameState)
+  const playerColor = getPlayerColor(playerText)
   return (
-    <div className="mt-6 text-center">
+    <div className={`mt-6 text-center ${playerColor}`}>
       <h2 className="text-xl">{isClient ? playerText : <>&nbsp;</>}</h2>
     </div>
   )

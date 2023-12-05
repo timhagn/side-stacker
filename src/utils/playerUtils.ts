@@ -34,6 +34,18 @@ export const whoAmI = (gameState: GameStack): string => {
 }
 
 /**
+ * Returns the color for PlayerInfo.
+ *
+ * @param {string}  playerText  The current playerText (playerOneText | playerTwoText | '').
+ */
+export const getPlayerColor = (playerText: string): string =>
+  playerText === playerOneText
+    ? 'text-emerald-600'
+    : playerText === playerTwoText
+      ? 'text-red-400'
+      : ''
+
+/**
  * Determines which text to display for the current GameStack & play states.
  *
  * @param {GameStack}   gameState   The current GameStack state.
