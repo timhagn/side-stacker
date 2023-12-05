@@ -7,7 +7,7 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Side-Stacker Game',
+  title: 'Side-Stacker Game (Stack-Roulette)',
   description: 'Connect Four with a twist',
 }
 
