@@ -9,7 +9,6 @@ import {
   SocketData,
 } from '@/types/socketTypes'
 import { PORT } from '@/const/socketConstants'
-import { randomId } from '@/utils/socketHelpers'
 import { loadGameForPlayer } from '@/lib/sqliteDb'
 
 export const config = {
@@ -39,6 +38,8 @@ export default async function handler(
   }).listen(PORT + 1)
   res.socket.server.io = io
 
+  // Register a Middleware to load a Game for a given session ID (player ID)
+  // and prefill socket.data.
   io.use(async (socket, next) => {
     const sessionId = socket.handshake.auth.sessionId
     if (sessionId) {
