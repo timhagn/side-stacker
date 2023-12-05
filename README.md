@@ -31,7 +31,19 @@ in a SQLite DB in the backend.
 
 ## Getting Started
 
-First, run the development server:
+After cloning the repository & installing the dependencies with:
+
+```bash
+npm i
+# or
+yarn
+# or
+pnpm i
+# or
+bun install
+```
+
+run the development server:
 
 ```bash
 npm run dev
