@@ -27,7 +27,7 @@ import {
 } from '@/utils/socketHelpers'
 
 /**
- * Socket Connection Handler.
+ * Socket Connection Listener.
  *
  * @param {Socket}  socket   The connected socket.
  * @returns {Promise<void>}

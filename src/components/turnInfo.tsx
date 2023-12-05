@@ -1,9 +1,9 @@
 'use client'
 
 import { useClient } from '@/hooks/useClient'
-import { GameStack, GameState } from '@/types/dbTypes'
+import { GameStack } from '@/types/dbTypes'
 import { PlayStates } from '@/types/gameStateTypes'
-import { getTurnInfoText, whoAmI } from '@/utils/playerUtils'
+import { getTurnInfoText } from '@/utils/playerUtils'
 
 interface TurnInfoProps {
   gameState: GameStack

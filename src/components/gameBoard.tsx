@@ -13,6 +13,7 @@ import { ClientToServerEvents, ServerToClientEvents } from '@/types/socketTypes'
 import { getSessionIdCookie, setSessionIdCookie } from '@/utils/cookieUtils'
 import { isGameOver, isLegalMove } from '@/utils/gameUtils'
 
+// Set up a socket client.
 let socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
   `:${PORT + 1}`,
   {
@@ -38,12 +39,6 @@ export default function GameBoard({
 
   const socketInitializer = async () => {
     if (!socket?.connected) {
-      // socket = io(`:${PORT + 1}`, {
-      //   path: '/api/socket',
-      //   addTrailingSlash: false,
-      //   autoConnect: false,
-      // })
-
       // First check if we have an existing sessionId for the player,
       // so we may jump back into the game.
       const sessionId = getSessionIdCookie()
@@ -57,16 +52,14 @@ export default function GameBoard({
       })
 
       socket.on('playerTwoJoined', ({ gameState, playState }) => {
-        console.log(gameState)
+        // Set the current Game & Play States returned by the callback.
         setCurrentGameState(gameState)
         setCurrentPlayState(playState)
-        // TODO: emit player state (whose turn it is) & wait for playerTwo
       })
 
       // If we didn't have a sessionId set when connecting,
       // the server will create one for us.
       socket.on('session', ({ sessionId, gameState, playState }) => {
-        console.log('session', sessionId)
         // Attach the sessionId to the next reconnection attempts.
         socket.auth = { sessionId }
         // Store it in a cookie.
@@ -81,11 +74,7 @@ export default function GameBoard({
       })
 
       socket.on('updatedBoard', ({ boardState, playState }) => {
-        console.log(
-          'New board & play state received as ACK',
-          boardState,
-          playState,
-        )
+        // The other player made a move. Update the Board & Play State.
         setCurrentBoard(boardState)
         setCurrentPlayState(playState)
       })
@@ -94,18 +83,18 @@ export default function GameBoard({
 
   const onPieceClick = useCallback(
     (gamePieceId: GamePieceId) => {
+      // Early return if we don't have a socket connection, the move isn't
+      // allowed or the game is already over.
       if (
         !socket ||
         !isLegalMove(gamePieceId, currentBoard) ||
         isGameOver(currentPlayState)
-      )
+      ) {
         return
+      }
+      // Emit a setPiece event & update the Board & Play State with the data
+      // returned by the callback.
       socket.emit('setPiece', gamePieceId, ({ boardState, playState }) => {
-        console.log(
-          'New board & play state received as ACK',
-          boardState,
-          playState,
-        )
         setCurrentBoard(boardState)
         setCurrentPlayState(playState)
       })
@@ -125,7 +114,6 @@ export default function GameBoard({
         playState={currentPlayState}
       />
       <PlayerInfo gameState={currentGameState} />
-      {/* TODO: set turnInfo according to currentPlayState */}
       <TurnInfo gameState={currentGameState} playState={currentPlayState} />
     </div>
   )

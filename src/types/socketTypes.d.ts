@@ -3,12 +3,8 @@ import { Socket as NetSocket } from 'net'
 import { NextResponse } from 'next/server'
 import { Server as IOServer } from 'socket.io'
 
-import { GameStack, GameState } from '@/types/dbTypes'
-import {
-  GamePieceBoardState,
-  GamePieceId,
-  PlayStates,
-} from '@/types/gameStateTypes'
+import { GameStack } from '@/types/dbTypes'
+import { GamePieceId } from '@/types/gameStateTypes'
 
 /**
  * Socket.io types
