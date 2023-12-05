@@ -10,7 +10,6 @@ import { cookies } from 'next/headers'
 import { SESSION_ID_COOKIE_NAME } from '@/utils/cookieUtils'
 import {
   buildBoardState,
-  getCurrentPlayState,
   getInitialGameState,
   initializeBoard,
 } from '@/utils/gameUtils'
